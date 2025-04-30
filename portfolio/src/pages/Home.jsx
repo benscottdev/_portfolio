@@ -1,5 +1,5 @@
 import React from "react";
-import BenScott from "../components/BenScott";
+import BenScott from "./BenScott";
 import WhoAmI from "../components/WhoAmI";
 
 function Home() {

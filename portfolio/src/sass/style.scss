@@ -7,6 +7,7 @@
 // Variables
 $main: #c9c9c9;
 $secondary: #b0b5b9;
+$bodyCopy: #1e1e1e;
 
 $mainFont: "Helvetica", sans-serif;
 
@@ -35,6 +36,15 @@ html {
   z-index: -1000;
 }
 
+.css3d {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  pointer-events: none !important; /* unless you want the DOM to be interactive */
+  z-index: -1000;
+}
+
 // Header
 .main-navigation {
   position: fixed;
@@ -55,9 +65,10 @@ html {
     font-size: 18px;
     font-family: $mainFont;
     text-transform: uppercase;
-    color: black;
+    color: $bodyCopy;
     font-weight: 900;
-    letter-spacing: 0px;
+    letter-spacing: -0.5px;
+    z-index: 100;
 
     @media (max-width: 1000px) {
       font-size: 12px;
@@ -67,7 +78,7 @@ html {
 
 .whoAmIContainer {
   position: absolute;
-  color: white;
+
   font-size: 1rem;
   pointer-events: none;
   transform: translate(-50%, -50%);
@@ -85,15 +96,15 @@ html {
     align-items: flex-end;
     font-family: $mainFont;
     font-weight: 100;
-    color: white;
+    color: $bodyCopy;
     max-width: 25%;
     font-size: 24px;
     text-transform: uppercase;
     text-align: right;
+
     img {
       width: 600px;
       height: 400px;
-
       object-fit: cover;
     }
   }

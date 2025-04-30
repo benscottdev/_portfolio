@@ -2,15 +2,16 @@ import React from "react";
 import { gsap } from "gsap";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { CSS3DRenderer, CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import typeFace from "../static/fonts/NohemiBold.typeface.json";
-import WhoAmI from "../components/WhoAmI";
+import WhoAmI from "./WhoIAm";
 
 function BenScott() {
   const canvasRef = useRef();
   const whoAmIRef = useRef();
+  const containerRef = useRef();
 
   useEffect(() => {
     // THREEJS
@@ -22,6 +23,11 @@ function BenScott() {
       width: window.innerWidth,
       height: window.innerHeight,
     };
+
+    const isMobile = window.innerWidth < 768;
+    const camera = new THREE.PerspectiveCamera(isMobile ? 35 : 15, sizes.width / sizes.height, 0.1, 100);
+    camera.position.set(0, 0, 12);
+    scene.add(camera);
 
     /*
      * Textures
@@ -141,7 +147,7 @@ function BenScott() {
      */
 
     // Plane Geometry
-    const planeGeometry = new THREE.PlaneGeometry(20, 20, 500, 500);
+    const planeGeometry = new THREE.PlaneGeometry(20, 20, 100, 100);
     const planeMaterial = new THREE.MeshStandardMaterial({
       roughness: 0.3,
       metalnessMap: concreteARMTexture,
@@ -200,72 +206,58 @@ function BenScott() {
      * Div Positioning
      */
 
-    const whoAmIContainerWorldPosition = new THREE.Vector3(2, 5, 0);
+    const whoAmIElement = whoAmIRef.current;
+    const whoAmIObject = new CSS3DObject(whoAmIElement);
+    whoAmIObject.position.copy(cube.position);
+    whoAmIObject.scale.set(0.003, 0.003, 0.003);
 
-    const vector = new THREE.Vector3();
-
-    const updateDivPosition = () => {
-      if (!whoAmIRef.current) return;
-
-      const canvasBounds = canvas.getBoundingClientRect();
-      vector.copy(whoAmIContainerWorldPosition);
-      vector.project(camera);
-
-      const x = (vector.x * 0.5 + 0.5) * canvasBounds.width + canvasBounds.left;
-      const y = (1 - (vector.y * 0.5 + 0.5)) * canvasBounds.height + canvasBounds.top;
-
-      whoAmIRef.current.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
-    };
+    scene.add(whoAmIObject);
 
     const homeBtn = document.querySelector(".home");
+    if (homeBtn) {
+      homeBtn.addEventListener("click", () => {
+        gsap.to(camera.position, {
+          x: text.position.x,
+          y: text.position.y,
+          duration: 1,
+          ease: "power2.inOut",
+        });
 
-    homeBtn.addEventListener("click", () => {
-      gsap.to(camera.position, {
-        x: text.position.x,
-        y: text.position.y,
-        duration: 1,
-        ease: "power2.inOut",
+        gsap.to(lookAtTarget, {
+          x: text.position.x,
+          y: text.position.y,
+          z: text.position.z,
+          duration: 1,
+          ease: "power2.inOut",
+          onUpdate: () => {
+            cameraFocus.set(lookAtTarget.x, lookAtTarget.y, lookAtTarget.z);
+          },
+        });
       });
-
-      gsap.to(lookAtTarget, {
-        x: text.position.x,
-        y: text.position.y,
-        z: text.position.z,
-        duration: 1,
-        ease: "power2.inOut",
-        onUpdate: () => {
-          cameraFocus.set(lookAtTarget.x, lookAtTarget.y, lookAtTarget.z);
-        },
-      });
-    });
+    }
 
     const whoIAmBtn = document.querySelector(".whoiam");
+    if (whoIAmBtn) {
+      whoIAmBtn.addEventListener("click", () => {
+        gsap.to(camera.position, {
+          x: cube.position.x,
+          y: cube.position.y,
+          duration: 1,
+          ease: "power2.inOut",
+        });
 
-    whoIAmBtn.addEventListener("click", () => {
-      gsap.to(camera.position, {
-        x: cube.position.x,
-        y: cube.position.y,
-        duration: 1,
-        ease: "power2.inOut",
+        gsap.to(lookAtTarget, {
+          x: cube.position.x,
+          y: cube.position.y,
+          z: cube.position.z,
+          duration: 1,
+          ease: "power2.inOut",
+          onUpdate: () => {
+            cameraFocus.set(lookAtTarget.x, lookAtTarget.y, lookAtTarget.z);
+          },
+        });
       });
-
-      gsap.to(lookAtTarget, {
-        x: cube.position.x,
-        y: cube.position.y,
-        z: cube.position.z,
-        duration: 1,
-        ease: "power2.inOut",
-        onUpdate: () => {
-          cameraFocus.set(lookAtTarget.x, lookAtTarget.y, lookAtTarget.z);
-        },
-      });
-    });
-
-    const isMobile = window.innerWidth < 768;
-    const camera = new THREE.PerspectiveCamera(isMobile ? 35 : 15, sizes.width / sizes.height, 0.1, 100);
-    camera.position.set(0, 0, 12);
-    scene.add(camera);
-
+    }
     let targetX = 0;
     let targetY = 0;
 
@@ -277,7 +269,7 @@ function BenScott() {
       targetY = cameraFocus.y - relativeY * 1.45;
     });
 
-    // Renderer
+    // Renderers
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setSize(sizes.width, sizes.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -285,17 +277,26 @@ function BenScott() {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+    // CSS Renderer for DOM elements
+    const cssRenderer = new CSS3DRenderer();
+    cssRenderer.domElement.classList.add("css3d");
+    cssRenderer.setSize(sizes.width, sizes.height);
+    cssRenderer.domElement.style.position = "absolute";
+    cssRenderer.domElement.style.top = "0";
+    containerRef.current.appendChild(cssRenderer.domElement); // containerRef is a wrapper div
+
     // Animation
     const tick = () => {
       const parallaxX = targetX;
       const parallaxY = targetY;
-      updateDivPosition();
       camera.position.x += (parallaxX - camera.position.x) * 0.05;
       camera.position.y += (parallaxY - camera.position.y) * 0.05;
 
       camera.lookAt(cameraFocus);
 
       renderer.render(scene, camera);
+      cssRenderer.render(scene, camera);
+
       requestAnimationFrame(tick);
     };
     tick();
@@ -332,10 +333,10 @@ function BenScott() {
   }, []);
 
   return (
-    <>
+    <div ref={containerRef} style={{ position: "relative", width: "100%", height: "100%" }}>
       <canvas ref={canvasRef} className="webgl" />
       <WhoAmI ref={whoAmIRef} />
-    </>
+    </div>
   );
 }
 export default BenScott;

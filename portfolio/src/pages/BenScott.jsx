@@ -7,10 +7,14 @@ import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import typeFace from "../static/fonts/NohemiBold.typeface.json";
 import WhoAmI from "./WhoIAm";
+import WhatIDo from "./WhatIDo";
+import TalkToMe from "./TalkToMe";
 
 function BenScott() {
   const canvasRef = useRef();
   const whoAmIRef = useRef();
+  const whatIDoRef = useRef();
+  const talkToMeRef = useRef();
   const containerRef = useRef();
 
   useEffect(() => {
@@ -24,8 +28,9 @@ function BenScott() {
       height: window.innerHeight,
     };
 
-    const isMobile = window.innerWidth < 768;
-    const camera = new THREE.PerspectiveCamera(isMobile ? 35 : 15, sizes.width / sizes.height, 0.1, 100);
+    const isMobile = window.innerWidth < 1000;
+    const camera = new THREE.PerspectiveCamera(isMobile ? 30 : 15, sizes.width / sizes.height, 0.1, 100);
+
     camera.position.set(0, 0, 12);
     scene.add(camera);
 
@@ -79,11 +84,12 @@ function BenScott() {
     metalNormalTexture.wrapT = THREE.RepeatWrapping;
 
     const metalTexture = new THREE.MeshStandardMaterial({
-      color: "white",
+      color: "#727272",
       aoMap: metalAOTexture,
-      roughness: 0.2,
+      roughness: 0.3,
       metalness: 0.99,
       normalMap: metalNormalTexture,
+      aoMapIntensity: 1,
     });
 
     // Concrete Look Texture
@@ -126,8 +132,8 @@ function BenScott() {
       depth: 0.2,
       curveSegments: 24,
       bevelEnabled: true,
-      bevelThickness: 0.05,
-      bevelSize: 0.002,
+      bevelThickness: 0.005,
+      bevelSize: 0.005,
       bevelSegments: 12,
     });
     textGeometry.center();
@@ -164,24 +170,18 @@ function BenScott() {
     planeMesh.receiveShadow = true;
     scene.add(planeMesh);
 
-    // Test Cube
-    const cube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ color: 0xff00ff }));
-    cube.position.set(2, 5, 0);
-    // scene.add(cube);
-    cube.castShadow = true;
-
     /*
      * Scene Add-ons
      */
 
     // Lights
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 
     const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-    dirLight.shadow.bias = 0.00004;
+    dirLight.shadow.bias = 0.000045;
 
-    dirLight.position.set(4, 4, 10);
+    dirLight.position.set(3, 3, 10);
     dirLight.castShadow = true;
     dirLight.shadow.mapSize.width = 2048;
     dirLight.shadow.mapSize.height = 2048;
@@ -206,13 +206,30 @@ function BenScott() {
      * Div Positioning
      */
 
+    const baseScale = window.innerWidth < 1200 ? 0.0095 : 0.003;
+
+    // WhoAmI
     const whoAmIElement = whoAmIRef.current;
     const whoAmIObject = new CSS3DObject(whoAmIElement);
-    whoAmIObject.position.copy(cube.position);
-    whoAmIObject.scale.set(0.003, 0.003, 0.003);
-
+    whoAmIObject.position.set(5, 6, 0);
+    whoAmIObject.scale.set(baseScale, baseScale, baseScale);
     scene.add(whoAmIObject);
 
+    // WhatIDo
+    const whatIDoElement = whatIDoRef.current;
+    const whatIDoObject = new CSS3DObject(whatIDoElement);
+    whatIDoObject.position.set(3, -4, 0);
+    whatIDoObject.scale.set(baseScale, baseScale, baseScale);
+    scene.add(whatIDoObject);
+
+    // TalkToMe
+    const TalkToMeElement = talkToMeRef.current;
+    const TalkToMeObject = new CSS3DObject(TalkToMeElement);
+    TalkToMeObject.position.set(-6, 0, 0);
+    TalkToMeObject.scale.set(baseScale, baseScale, baseScale);
+    scene.add(TalkToMeObject);
+
+    // Home
     const homeBtn = document.querySelector(".home");
     if (homeBtn) {
       homeBtn.addEventListener("click", () => {
@@ -231,33 +248,92 @@ function BenScott() {
           ease: "power2.inOut",
           onUpdate: () => {
             cameraFocus.set(lookAtTarget.x, lookAtTarget.y, lookAtTarget.z);
+            targetX = lookAtTarget.x;
+            targetY = lookAtTarget.y;
           },
         });
       });
     }
 
+    // Who I Am
     const whoIAmBtn = document.querySelector(".whoiam");
     if (whoIAmBtn) {
       whoIAmBtn.addEventListener("click", () => {
         gsap.to(camera.position, {
-          x: cube.position.x,
-          y: cube.position.y,
+          x: whoAmIObject.position.x,
+          y: whoAmIObject.position.y,
           duration: 1,
           ease: "power2.inOut",
         });
 
         gsap.to(lookAtTarget, {
-          x: cube.position.x,
-          y: cube.position.y,
-          z: cube.position.z,
+          x: whoAmIObject.position.x,
+          y: whoAmIObject.position.y,
+          z: whoAmIObject.position.z,
           duration: 1,
           ease: "power2.inOut",
           onUpdate: () => {
             cameraFocus.set(lookAtTarget.x, lookAtTarget.y, lookAtTarget.z);
+            targetX = lookAtTarget.x;
+            targetY = lookAtTarget.y;
           },
         });
       });
     }
+
+    // What I Do
+    const whatIdoBtn = document.querySelector(".whatido");
+    if (whatIdoBtn) {
+      whatIdoBtn.addEventListener("click", () => {
+        gsap.to(camera.position, {
+          x: whatIDoObject.position.x,
+          y: whatIDoObject.position.y,
+          duration: 1,
+          ease: "power2.inOut",
+        });
+
+        gsap.to(lookAtTarget, {
+          x: whatIDoObject.position.x,
+          y: whatIDoObject.position.y,
+          z: whatIDoObject.position.z,
+          duration: 1,
+          ease: "power2.inOut",
+          onUpdate: () => {
+            cameraFocus.set(lookAtTarget.x, lookAtTarget.y, lookAtTarget.z);
+            targetX = lookAtTarget.x;
+            targetY = lookAtTarget.y;
+          },
+        });
+      });
+    }
+
+    // Talk To Me
+    const talkToMeBtn = document.querySelector(".talktome");
+    if (talkToMeBtn) {
+      talkToMeBtn.addEventListener("click", () => {
+        gsap.to(camera.position, {
+          x: TalkToMeObject.position.x,
+          y: TalkToMeObject.position.y,
+          duration: 1,
+          ease: "power2.inOut",
+        });
+
+        gsap.to(lookAtTarget, {
+          x: TalkToMeObject.position.x,
+          y: TalkToMeObject.position.y,
+          z: TalkToMeObject.position.z,
+          duration: 1,
+          ease: "power2.inOut",
+          onUpdate: () => {
+            cameraFocus.set(lookAtTarget.x, lookAtTarget.y, lookAtTarget.z);
+            targetX = lookAtTarget.x;
+            targetY = lookAtTarget.y;
+          },
+        });
+      });
+    }
+
+    // Mouse Move Paralax
     let targetX = 0;
     let targetY = 0;
 
@@ -267,6 +343,17 @@ function BenScott() {
 
       targetX = cameraFocus.x + relativeX * 1.45;
       targetY = cameraFocus.y - relativeY * 1.45;
+    });
+
+    window.addEventListener("touchmove", (e) => {
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        const relativeX = (touch.clientX / window.innerWidth - 0.5) * 3;
+        const relativeY = (touch.clientY / window.innerHeight - 0.5) * 3;
+
+        targetX = cameraFocus.x + relativeX * 2.45;
+        targetY = cameraFocus.y - relativeY * 2.45;
+      }
     });
 
     // Renderers
@@ -283,7 +370,7 @@ function BenScott() {
     cssRenderer.setSize(sizes.width, sizes.height);
     cssRenderer.domElement.style.position = "absolute";
     cssRenderer.domElement.style.top = "0";
-    containerRef.current.appendChild(cssRenderer.domElement); // containerRef is a wrapper div
+    containerRef.current.appendChild(cssRenderer.domElement);
 
     // Animation
     const tick = () => {
@@ -319,6 +406,9 @@ function BenScott() {
 
       renderer.setSize(sizes.width, sizes.height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      cssRenderer.setSize(sizes.width, sizes.height);
+      cssRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     };
 
     window.addEventListener("resize", handleResize);
@@ -336,6 +426,8 @@ function BenScott() {
     <div ref={containerRef} style={{ position: "relative", width: "100%", height: "100%" }}>
       <canvas ref={canvasRef} className="webgl" />
       <WhoAmI ref={whoAmIRef} />
+      <WhatIDo ref={whatIDoRef} />
+      <TalkToMe ref={talkToMeRef} />
     </div>
   );
 }

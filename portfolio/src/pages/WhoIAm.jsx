@@ -1,12 +1,20 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect } from "react";
 
-const WhoAmI = forwardRef((props, ref) => {
+const WhoAmI = forwardRef((__, ref) => {
+  useEffect(() => {
+    const portrait = document.querySelector(".portrait");
+
+    portrait.addEventListener("click", () => {
+      portrait.style.border = "20px solid black";
+    });
+  }, []);
+
   return (
     <div className="whoAmIContainer" ref={ref}>
-      <div className="half">
-        <img src="./src/static/Ben_Ghibli.jpg" alt="" />
+      <div className="third">
+        <img className="portrait" src="./src/static/Ben_Ghibli.jpg" alt="" />
       </div>
-      <div className="half">
+      <div className="third">
         <p>
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
           <br />
@@ -17,8 +25,8 @@ const WhoAmI = forwardRef((props, ref) => {
           Sequi illum veniam debitis ad molestiae cupiditate ex commodi.
         </p>
       </div>
-      <div className="half">
-        <p>Who am I? I'm a developer, designer, and dreamer.</p>
+      <div className="third">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
       </div>
     </div>
   );

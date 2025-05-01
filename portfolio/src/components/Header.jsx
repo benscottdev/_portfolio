@@ -10,10 +10,10 @@ function Header() {
       <Link className="link whoiam" to="/whoiam">
         who i am
       </Link>
-      <Link className="link" to="/whatido">
+      <Link className="link whatido" to="/whatido">
         what i do
       </Link>
-      <Link className="link" to="/talktome">
+      <Link className="link talktome" to="/talktome">
         talk to me
       </Link>
     </div>

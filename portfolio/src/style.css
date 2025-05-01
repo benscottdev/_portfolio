@@ -12,6 +12,18 @@ html {
   overflow: hidden;
 }
 
+p {
+  font-family: "Helvetica", sans-serif;
+  font-weight: 100;
+  color: #1e1e1e;
+  font-size: 24px;
+}
+@media (max-width: 1200px) {
+  p {
+    font-size: 12px !important;
+  }
+}
+
 /*
 * Main Styling
 */
@@ -31,7 +43,7 @@ html {
   top: 0;
   left: 0;
   z-index: 2;
-  pointer-events: none !important; /* unless you want the DOM to be interactive */
+  pointer-events: none !important;
   z-index: -1000;
 }
 
@@ -43,21 +55,23 @@ html {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 100px;
 }
 @media (max-width: 1000px) {
   .main-navigation {
+    gap: 25px;
     padding: 25px 20px;
   }
 }
 .main-navigation .link {
   text-decoration: none;
-  font-size: 18px;
+  font-size: 22px;
   font-family: "Helvetica", sans-serif;
   text-transform: uppercase;
   color: #1e1e1e;
   font-weight: 900;
-  letter-spacing: -0.5px;
+  letter-spacing: -1px;
   z-index: 100;
 }
 @media (max-width: 1000px) {
@@ -68,31 +82,66 @@ html {
 
 .whoAmIContainer {
   position: absolute;
-  font-size: 1rem;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 95%;
+  height: 100%;
+  padding: 100px;
+}
+@media (max-width: 1200px) {
+  .whoAmIContainer {
+    padding-top: 15% !important;
+    padding: 0px;
+    flex-direction: column;
+  }
+}
+.whoAmIContainer .third {
+  height: 80%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  max-width: 25%;
+  text-transform: uppercase;
+  text-align: right;
+}
+@media (max-width: 1200px) {
+  .whoAmIContainer .third {
+    height: auto;
+    max-width: none;
+    width: 90% !important;
+  }
+}
+.whoAmIContainer .third img {
+  width: 100%;
+  aspect-ratio: 8/7;
+  object-fit: cover;
+}
+@media (max-width: 1200px) {
+  .whoAmIContainer .third img {
+    width: 200px !important;
+  }
+}
+
+.talkToMeContainer {
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
   width: 100%;
   height: 100%;
 }
-.whoAmIContainer .half {
+.talkToMeContainer .half {
   height: 80%;
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  font-family: "Helvetica", sans-serif;
-  font-weight: 100;
-  color: #1e1e1e;
-  max-width: 25%;
-  font-size: 24px;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 30%;
   text-transform: uppercase;
-  text-align: right;
 }
-.whoAmIContainer .half img {
-  width: 600px;
-  height: 400px;
-  object-fit: cover;
+.talkToMeContainer .half p {
+  text-align: left !important;
+}
+.talkToMeContainer .half p a {
+  color: black;
 }

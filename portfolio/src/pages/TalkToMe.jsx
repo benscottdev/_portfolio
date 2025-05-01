@@ -1,7 +1,21 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
-function TalkToMe() {
-  return <div>TalkToMe</div>;
-}
+const TalkToMe = forwardRef((__, ref) => {
+  return (
+    <div className="talkToMeContainer" ref={ref}>
+      <div className="half">
+        <p>
+          <b>mobile:</b> 0498 095 622
+        </p>
+        <p>
+          <b>email:</b> <a href="mailto:benscott.dev@gmail.com">benscott.dev@gmail.com</a>
+        </p>
+      </div>
+      <div className="half">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut veniam provident quo quisquam ullam, repudiandae dignissimos laboriosam, necessitatibus et natus quos neque fugiat illum cumque earum doloremque, quidem debitis? Quasi.</p>
+      </div>
+    </div>
+  );
+});
 
 export default TalkToMe;

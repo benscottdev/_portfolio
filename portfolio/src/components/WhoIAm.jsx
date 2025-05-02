@@ -12,7 +12,7 @@ const WhoAmI = forwardRef((__, ref) => {
   return (
     <div className="whoAmIContainer" ref={ref}>
       <div className="third">
-        <img className="portrait" src="./src/static/Ben_Ghibli.jpg" alt="" />
+        <img className="portrait" src="./src/static/Ben_Ghibli.png" alt="" />
       </div>
       <div className="third">
         <p>

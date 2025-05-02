@@ -47,45 +47,6 @@
       "oO" : 1,
       "oS" : 1
     },
-    "\/public\/textures\/3.png" : {
-      "ft" : 32768,
-      "iS" : 732068,
-      "oA" : 0,
-      "oAP" : "\/public\/textures\/3.png",
-      "oF" : 0,
-      "oIPL" : 0,
-      "opt" : 0,
-      "oT" : 1,
-      "ou" : "lpckwebp-none",
-      "q" : 90,
-      "rq" : 75
-    },
-    "\/public\/textures\/4.png" : {
-      "ft" : 32768,
-      "iS" : 487905,
-      "oA" : 0,
-      "oAP" : "\/public\/textures\/4.png",
-      "oF" : 0,
-      "oIPL" : 0,
-      "opt" : 0,
-      "oT" : 1,
-      "ou" : "lpckwebp-none",
-      "q" : 90,
-      "rq" : 75
-    },
-    "\/public\/textures\/5.png" : {
-      "ft" : 32768,
-      "iS" : 281213,
-      "oA" : 0,
-      "oAP" : "\/public\/textures\/5.png",
-      "oF" : 0,
-      "oIPL" : 1,
-      "opt" : 1,
-      "oT" : 1,
-      "ou" : "lpckwebp-none",
-      "q" : 90,
-      "rq" : 75
-    },
     "\/public\/textures\/rough_plaster_brick_04_2k\/rough_plaster_brick_04_arm_2k.jpg" : {
       "ft" : 16384,
       "iS" : 878969,
@@ -94,7 +55,7 @@
       "oAP" : "\/public\/textures\/rough_plaster_brick_04_2k\/rough_plaster_brick_04_arm_2k.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -133,9 +94,35 @@
       "oAP" : "\/public\/textures\/rough_plaster_brick_04_2k\/rough_plaster_brick_04_nor_gl_2k.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
+      "rq" : 75
+    },
+    "\/public\/textures\/worn-metal4-bl\/.worn_metal4_diff~imageoptim.png" : {
+      "ft" : 32768,
+      "iS" : 1164193,
+      "oA" : 0,
+      "oAP" : "\/public\/textures\/worn-metal4-bl\/.worn_metal4_diff~imageoptim.png",
+      "oF" : 0,
+      "oIPL" : 0,
+      "opt" : 0,
+      "oT" : 1,
+      "ou" : "lpckwebp-none",
+      "q" : 90,
+      "rq" : 75
+    },
+    "\/public\/textures\/worn-metal4-bl\/metal_0026_normal_opengl_1k.png" : {
+      "ft" : 32768,
+      "iS" : 3585947,
+      "oA" : 0,
+      "oAP" : "\/public\/textures\/worn-metal4-bl\/metal_0026_normal_opengl_1k.png",
+      "oF" : 0,
+      "oIPL" : 0,
+      "opt" : 0,
+      "oT" : 1,
+      "ou" : "lpckwebp-none",
+      "q" : 90,
       "rq" : 75
     },
     "\/public\/textures\/worn-metal4-bl\/worn_metal4_ao.png" : {
@@ -155,10 +142,10 @@
       "ft" : 32768,
       "iS" : 5881059,
       "oA" : 0,
-      "oAP" : "\/public\/textures\/worn-metal4-bl\/worn_metal4_diff.png",
+      "oAP" : "\/public\/textures\/worn-metal4-bl\/.worn_metal4_diff~imageoptim.png",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "oT" : 1,
       "ou" : "lpckwebp-none",
       "q" : 90,
@@ -203,6 +190,19 @@
       "q" : 90,
       "rq" : 75
     },
+    "\/public\/textures\/worn-metal4-bl\/worn_metal4_preview.jpg" : {
+      "ft" : 16384,
+      "iS" : 60144,
+      "jF" : 0,
+      "oA" : 0,
+      "oAP" : "\/public\/textures\/worn-metal4-bl\/worn_metal4_preview.jpg",
+      "oF" : 0,
+      "oIPL" : 0,
+      "opt" : 0,
+      "ou" : "lpckwebp-none",
+      "q" : 100,
+      "rq" : 75
+    },
     "\/public\/textures\/worn-metal4-bl\/worn_metal4_Roughness.png" : {
       "ft" : 32768,
       "iS" : 3067206,
@@ -215,16 +215,6 @@
       "ou" : "lpckwebp-none",
       "q" : 90,
       "rq" : 75
-    },
-    "\/public\/vite.svg" : {
-      "ft" : 2097152,
-      "miP" : 0,
-      "oA" : 2,
-      "oAP" : "\/public\/vite.svg",
-      "oF" : 0,
-      "opt" : 0,
-      "plM" : 52780316221407,
-      "prP" : 0
     },
     "\/README.md" : {
       "cB" : 0,
@@ -267,6 +257,39 @@
       "sC" : 3,
       "tS" : 0
     },
+    "\/src\/components\/TalkToMe.jsx" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 0,
+      "oAP" : "\/src\/components\/TalkToMe-min.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 0
+    },
+    "\/src\/components\/WhatIDo.jsx" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 0,
+      "oAP" : "\/src\/components\/WhatIDo-min.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 0
+    },
+    "\/src\/components\/WhoIAm.jsx" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 0,
+      "oAP" : "\/src\/components\/WhoIAm-min.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 0
+    },
     "\/src\/main.jsx" : {
       "bF" : 0,
       "ft" : 64,
@@ -278,17 +301,6 @@
       "sC" : 3,
       "tS" : 0
     },
-    "\/src\/pages\/BenScott.jsx" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/pages\/BenScott-min.js",
-      "oF" : 1,
-      "sC" : 3,
-      "tS" : 0
-    },
     "\/src\/pages\/Home.jsx" : {
       "bF" : 0,
       "ft" : 64,
@@ -296,39 +308,6 @@
       "mi" : 1,
       "oA" : 0,
       "oAP" : "\/src\/pages\/Home-min.js",
-      "oF" : 0,
-      "sC" : 3,
-      "tS" : 0
-    },
-    "\/src\/pages\/TalkToMe.jsx" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 0,
-      "oAP" : "\/src\/pages\/TalkToMe-min.js",
-      "oF" : 0,
-      "sC" : 3,
-      "tS" : 0
-    },
-    "\/src\/pages\/WhatIDo.jsx" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 0,
-      "oAP" : "\/src\/pages\/WhatIDo-min.js",
-      "oF" : 0,
-      "sC" : 3,
-      "tS" : 0
-    },
-    "\/src\/pages\/WhoIAm.jsx" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 0,
-      "oAP" : "\/src\/pages\/WhoIAm-min.js",
       "oF" : 0,
       "sC" : 3,
       "tS" : 0
@@ -361,29 +340,42 @@
       "q" : 100,
       "rq" : 75
     },
-    "\/src\/static\/fonts\/NCL.typeface.json" : {
+    "\/src\/static\/Ben_Ghibli.png" : {
+      "ft" : 32768,
+      "iS" : 615711,
+      "oA" : 0,
+      "oAP" : "\/src\/static\/Ben_Ghibli.png",
+      "oF" : 0,
+      "oIPL" : 0,
+      "opt" : 0,
+      "oT" : 1,
+      "ou" : "lpckwebp-none",
+      "q" : 90,
+      "rq" : 75
+    },
+    "\/src\/static\/fonts\/Akira.typeface.json" : {
       "ft" : 524288,
       "oA" : 1,
-      "oAP" : "\/src\/static\/fonts\/NCL.typeface-min.json",
+      "oAP" : "\/src\/static\/fonts\/Akira.typeface-min.json",
       "oF" : 0,
       "oO" : 1,
       "oS" : 1
     },
-    "\/src\/static\/fonts\/Nohemi.typeface.json" : {
-      "ft" : 524288,
-      "oA" : 1,
-      "oAP" : "\/src\/static\/fonts\/Nohemi.typeface-min.json",
-      "oF" : 0,
-      "oO" : 1,
-      "oS" : 1
+    "\/src\/static\/fonts\/AkiraExpanded-SuperBold.woff" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/src\/static\/fonts\/AkiraExpanded-SuperBold.woff",
+      "oF" : 0
     },
-    "\/src\/static\/fonts\/NohemiBold.typeface.json" : {
-      "ft" : 524288,
-      "oA" : 1,
-      "oAP" : "\/src\/static\/fonts\/NohemiBold.typeface-min.json",
-      "oF" : 0,
-      "oO" : 1,
-      "oS" : 1
+    "\/src\/static\/fonts\/AkiraExpanded-SuperBold.woff2" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/src\/static\/fonts\/AkiraExpanded-SuperBold.woff2",
+      "oF" : 0
     },
     "\/src\/style.css" : {
       "aP" : 1,

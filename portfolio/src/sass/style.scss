@@ -1,4 +1,11 @@
 // Font Imports
+@font-face {
+  font-family: "Akira Expanded";
+  src: url("AkiraExpanded-SuperBold.woff2") format("woff2"), url("AkiraExpanded-SuperBold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
 
 /*
 * Universal
@@ -7,9 +14,10 @@
 // Variables
 $main: #c9c9c9;
 $secondary: #b0b5b9;
-$bodyCopy: #1e1e1e;
+$bodyCopy: #444444;
 
-$mainFont: "Helvetica", sans-serif;
+$bodyFont: "Helvetica", sans-serif;
+$linkFont: "Akira Expanded";
 
 * {
   padding: 0;
@@ -23,7 +31,7 @@ html {
 }
 
 p {
-  font-family: $mainFont;
+  font-family: $bodyFont;
   font-weight: 100;
   color: $bodyCopy;
   font-size: 24px;
@@ -67,26 +75,39 @@ p {
   align-items: center;
   justify-content: center;
   gap: 100px;
+  letter-spacing: -0.5px;
 
   @media (max-width: 1000px) {
-    gap: 25px;
+    gap: 5%;
     padding: 25px 20px;
   }
 
-  .link {
+  .linkWrapper {
+    height: 23px;
+    display: flex;
+    line-height: 23px;
+    justify-content: flex-start;
+    flex-direction: column;
+    overflow: hidden;
     text-decoration: none;
-    font-size: 22px;
-    font-family: $mainFont;
-    text-transform: uppercase;
-    color: $bodyCopy;
-    font-weight: 900;
-    letter-spacing: -1px;
-    z-index: 100;
 
-    @media (max-width: 1000px) {
-      font-size: 12px;
+    .link {
+      font-size: 20px;
+      font-family: $linkFont;
+      text-transform: uppercase;
+      color: $bodyCopy;
+      font-weight: 100;
+      z-index: 100;
+
+      @media (max-width: 800px) {
+        font-size: 12px;
+      }
     }
   }
+}
+
+.bottomLink {
+  color: orangered !important;
 }
 
 .whoAmIContainer {
@@ -94,9 +115,8 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  width: 95%;
+  width: 100%;
   height: 100%;
-  padding: 100px;
 
   @media (max-width: 1200px) {
     padding-top: 15% !important;
@@ -144,8 +164,10 @@ p {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    max-width: 30%;
+    width: 100%;
+    max-width: 40%;
     text-transform: uppercase;
+
     p {
       text-align: left !important;
 

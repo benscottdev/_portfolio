@@ -327,19 +327,6 @@
       "pg" : 0,
       "sct" : 0
     },
-    "\/src\/static\/Ben_Ghibli.jpg" : {
-      "ft" : 16384,
-      "iS" : 535354,
-      "jF" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/static\/Ben_Ghibli.jpg",
-      "oF" : 0,
-      "oIPL" : 0,
-      "opt" : 0,
-      "ou" : "lpckwebp-none",
-      "q" : 100,
-      "rq" : 75
-    },
     "\/src\/static\/Ben_Ghibli.png" : {
       "ft" : 32768,
       "iS" : 615711,

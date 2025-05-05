@@ -4,11 +4,9 @@ const TalkToMe = forwardRef((__, ref) => {
   return (
     <div className="talkToMeContainer" ref={ref}>
       <div className="half">
+        <p>mobile: 0498 095 622</p>
         <p>
-          <b>mobile:</b> 0498 095 622
-        </p>
-        <p>
-          <b>email:</b> <a href="mailto:benscott.dev@gmail.com">benscott.dev@gmail.com</a>
+          email: <a href="mailto:benscott.dev@gmail.com">benscott.dev@gmail.com</a>
         </p>
       </div>
       <div className="half">

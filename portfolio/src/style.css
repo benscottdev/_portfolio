@@ -73,9 +73,9 @@ p {
   }
 }
 .main-navigation .linkWrapper {
-  height: 23px;
+  height: 21px;
   display: flex;
-  line-height: 23px;
+  line-height: 21px;
   justify-content: flex-start;
   flex-direction: column;
   overflow: hidden;
@@ -83,7 +83,7 @@ p {
 }
 .main-navigation .linkWrapper .link {
   font-size: 20px;
-  font-family: "Akira Expanded";
+  font-family: "Helvetica", sans-serif;
   text-transform: uppercase;
   color: #444444;
   font-weight: 100;
@@ -162,5 +162,6 @@ p {
   text-align: left !important;
 }
 .talkToMeContainer .half p a {
-  color: black;
+  color: #444444;
+  font-weight: 100;
 }

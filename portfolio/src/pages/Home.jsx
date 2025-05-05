@@ -4,13 +4,11 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { CSS3DRenderer, CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
-import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import typeFace from "../static/fonts/Akira.typeface.json";
 import WhoAmI from "../components/WhoIAm";
 import WhatIDo from "../components/WhatIDo";
 import TalkToMe from "../components/TalkToMe";
-import Header from "../components/Header";
 
 function Home() {
   const canvasRef = useRef();
@@ -18,10 +16,8 @@ function Home() {
   const whatIDoRef = useRef();
   const talkToMeRef = useRef();
   const containerRef = useRef();
-  const headerRef = useRef();
 
   useEffect(() => {
-    // THREEJS
     const canvas = canvasRef.current;
     const scene = new THREE.Scene();
 
@@ -51,7 +47,7 @@ function Home() {
 
     metalColorTexture.colorSpace = THREE.SRGBColorSpace;
 
-    const metalRepeatCount = 0.5;
+    const metalRepeatCount = 0.4;
 
     metalColorTexture.repeat.x = metalRepeatCount;
     metalColorTexture.repeat.y = metalRepeatCount;
@@ -127,15 +123,15 @@ function Home() {
     const fontLoader = new FontLoader();
     const font = fontLoader.parse(typeFace);
 
-    const textGeometry = new TextGeometry("LOREM IPSUM", {
+    const textGeometry = new TextGeometry("BEN SCOTT", {
       font,
-      size: 0.3,
+      size: window.innerWidth < 1200 ? 0.3 : 0.4,
       depth: 0.1,
-      curveSegments: window.innerWidth > 3000 ? 4 : 12,
-      bevelSegments: window.innerWidth > 3000 ? 4 : 12,
+      curveSegments: window.innerWidth > 3000 ? 6 : 12,
+      bevelSegments: window.innerWidth > 3000 ? 6 : 12,
       bevelEnabled: true,
-      bevelThickness: 0.25,
-      bevelSize: 0.015,
+      bevelThickness: 0.2,
+      bevelSize: 0.008,
     });
     textGeometry.center();
     textGeometry.setAttribute("uv2", new THREE.BufferAttribute(textGeometry.attributes.uv.array, 2));
@@ -164,7 +160,7 @@ function Home() {
     });
 
     const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-    planeMesh.position.z = -0.5;
+    planeMesh.position.z = -0.6;
     planeMesh.position.x = 0.6;
     planeMesh.position.y = 2.8;
     planeMesh.receiveShadow = true;
@@ -201,14 +197,7 @@ function Home() {
     /*
      * Div Positioning
      */
-    const baseScale = window.innerWidth < 1200 ? 0.0095 : 0.003;
-
-    // Header
-    const headerElement = headerRef.current;
-    const headerObject = new CSS3DObject(headerElement);
-    headerObject.position.set(0, 0, 0);
-    headerObject.scale.set(baseScale, baseScale, baseScale);
-    scene.add(headerObject);
+    const baseScale = window.innerWidth < 1200 ? 0.0085 : 0.003;
 
     // WhoAmI
     const whoAmIElement = whoAmIRef.current;
@@ -335,7 +324,7 @@ function Home() {
       });
     }
 
-    // Mouse Move Paralax
+    // Mouse Move Parallax
     let targetX = 0;
     let targetY = 0;
 
@@ -414,11 +403,8 @@ function Home() {
       camera.position.y += (parallaxY - camera.position.y) * 0.05;
 
       camera.lookAt(cameraFocus);
-
       renderer.render(scene, camera);
-
       cssRenderer.render(scene, camera);
-
       requestAnimationFrame(tick);
     };
     tick();
@@ -434,7 +420,6 @@ function Home() {
   return (
     <div ref={containerRef} style={{ position: "relative", width: "100%", height: "100%" }}>
       <canvas ref={canvasRef} className="webgl" />
-      <Header ref={headerRef} />
       <WhoAmI ref={whoAmIRef} />
       <WhatIDo ref={whatIDoRef} />
       <TalkToMe ref={talkToMeRef} />

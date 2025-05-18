@@ -9,6 +9,7 @@ import typeFace from "../static/fonts/Akira.typeface.json";
 import WhoAmI from "../components/WhoIAm";
 import WhatIDo from "../components/WhatIDo";
 import TalkToMe from "../components/TalkToMe";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 
 function Home() {
   const canvasRef = useRef();
@@ -38,16 +39,16 @@ function Home() {
     const textureLoader = new THREE.TextureLoader();
 
     // Metal Look Texture
-    const metalColorTexture = textureLoader.load("/textures/worn-metal4-bl/worn_metal4_diff.png");
-    const metalAOTexture = textureLoader.load("/textures/worn-metal4-bl/worn_metal4_ao.png");
-    const metalRoughnessTexture = textureLoader.load("/textures/worn-metal4-bl/worn_metal4_Roughness.png");
-    const metalMetallicTexture = textureLoader.load("/textures/worn-metal4-bl/worn_metal4_Metallic.png");
-    const metalDisplacementTexture = textureLoader.load("/textures/worn-metal4-bl/worn_metal4_Height.png");
-    const metalNormalTexture = textureLoader.load("/textures/worn-metal4-bl/metal_0026_normal_opengl_1k.png");
+    const metalColorTexture = textureLoader.load("/textures/Metal003_2K-JPG/Metal003_2K-JPG_Color.jpg");
+    const metalAOTexture = textureLoader.load("/textures/Metal003_2K-JPG/worn_metal4_ao.png");
+    const metalRoughnessTexture = textureLoader.load("/textures/Metal003_2K-JPG/Metal003_2K-JPG_Roughness.jpg");
+    const metalMetallicTexture = textureLoader.load("/textures/Metal003_2K-JPG/Metal003_2K-JPG_Metalness.jpg");
+    const metalDisplacementTexture = textureLoader.load("/textures/Metal003_2K-JPG/Metal003_2K-JPG_Displacement.jpg");
+    const metalNormalTexture = textureLoader.load("/textures/Metal003_2K-JPG/Metal003_2K-JPG_NormalGL.jpg");
 
     metalColorTexture.colorSpace = THREE.SRGBColorSpace;
 
-    const metalRepeatCount = 0.4;
+    const metalRepeatCount = 1;
 
     metalColorTexture.repeat.x = metalRepeatCount;
     metalColorTexture.repeat.y = metalRepeatCount;
@@ -80,20 +81,21 @@ function Home() {
     metalNormalTexture.wrapT = THREE.RepeatWrapping;
 
     const metalTexture = new THREE.MeshStandardMaterial({
+      color: "darkgrey",
       map: metalColorTexture,
-      // color: "grey",
-      aoMap: metalAOTexture,
-      roughness: 0.3,
-      metalness: 0.5,
+      // aoMap: metalAOTexture,
+      roughness: 0.1,
+      metalness: 0.8,
       normalMap: metalNormalTexture,
-      aoMapIntensity: 4,
     });
 
     // Concrete Look Texture
-    const concreteColorTexture = textureLoader.load("/textures/rough_plaster_brick_04_2k/rough_plaster_brick_04_diff_2k.jpg");
-    const concreteARMTexture = textureLoader.load("/textures/rough_plaster_brick_04_2k/rough_plaster_brick_04_arm_2k.jpg");
-    const concreteDisplacementTexture = textureLoader.load("/textures/rough_plaster_brick_04_2k/rough_plaster_brick_04_disp_2k.jpg");
-    const concreteNormalTexture = textureLoader.load("/textures/rough_plaster_brick_04_2k/rough_plaster_brick_04_nor_gl_2k.jpg");
+    const concreteColorTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_Color.jpg");
+    const concreteRoughnessTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_Roughness.jpg");
+    const concreteAOTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_AmbientOcclusion.jpg");
+    const concreteMetalnessTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_Metalness.jpg");
+    const concreteDisplacementTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_Displacement.jpg");
+    const concreteNormalTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_NormalGL.jpg");
 
     concreteColorTexture.colorSpace = THREE.SRGBColorSpace;
 
@@ -104,10 +106,20 @@ function Home() {
     concreteColorTexture.wrapS = THREE.RepeatWrapping;
     concreteColorTexture.wrapT = THREE.RepeatWrapping;
 
-    concreteARMTexture.repeat.x = repeatCount;
-    concreteARMTexture.repeat.y = repeatCount;
-    concreteARMTexture.wrapS = THREE.RepeatWrapping;
-    concreteARMTexture.wrapT = THREE.RepeatWrapping;
+    concreteRoughnessTexture.repeat.x = repeatCount;
+    concreteRoughnessTexture.repeat.y = repeatCount;
+    concreteRoughnessTexture.wrapS = THREE.RepeatWrapping;
+    concreteRoughnessTexture.wrapT = THREE.RepeatWrapping;
+
+    concreteAOTexture.repeat.x = repeatCount;
+    concreteAOTexture.repeat.y = repeatCount;
+    concreteAOTexture.wrapS = THREE.RepeatWrapping;
+    concreteAOTexture.wrapT = THREE.RepeatWrapping;
+
+    concreteMetalnessTexture.repeat.x = repeatCount;
+    concreteMetalnessTexture.repeat.y = repeatCount;
+    concreteMetalnessTexture.wrapS = THREE.RepeatWrapping;
+    concreteMetalnessTexture.wrapT = THREE.RepeatWrapping;
 
     concreteDisplacementTexture.repeat.x = repeatCount;
     concreteDisplacementTexture.repeat.y = repeatCount;
@@ -122,22 +134,23 @@ function Home() {
     // Fonts
     const fontLoader = new FontLoader();
     const font = fontLoader.parse(typeFace);
+    const textContent = "Ben scott";
 
-    const textGeometry = new TextGeometry("BEN SCOTT", {
+    const textGeometry = new TextGeometry(textContent, {
       font,
-      size: window.innerWidth < 1200 ? 0.3 : 0.4,
+      size: window.innerWidth < 1500 ? 0.25 : 0.3,
       depth: 0.1,
-      curveSegments: window.innerWidth > 3000 ? 6 : 12,
-      bevelSegments: window.innerWidth > 3000 ? 6 : 12,
+      curveSegments: 8,
+      bevelSegments: 4,
       bevelEnabled: true,
-      bevelThickness: 0.2,
-      bevelSize: 0.008,
+      bevelThickness: 0.1,
+      bevelSize: 0.0055,
     });
     textGeometry.center();
     textGeometry.setAttribute("uv2", new THREE.BufferAttribute(textGeometry.attributes.uv.array, 2));
 
     const text = new THREE.Mesh(textGeometry, metalTexture);
-    text.rotation.x = -0.1;
+
     text.castShadow = true;
     text.receiveShadow = true;
     textGeometry.computeBoundingBox();
@@ -149,19 +162,21 @@ function Home() {
      */
 
     // Plane Geometry
-    const planeGeometry = new THREE.PlaneGeometry(20, 20, 20, 20);
+    const planeGeometry = new THREE.PlaneGeometry(30, 30, 30, 30);
     const planeMaterial = new THREE.MeshStandardMaterial({
-      roughness: 0.1,
-      metalnessMap: concreteARMTexture,
-      aoMap: concreteARMTexture,
+      color: "#000",
+      roughnessMap: concreteRoughnessTexture,
+      metalnessMap: concreteMetalnessTexture,
+
+      aoMap: concreteAOTexture,
       normalMap: concreteNormalTexture,
       displacementMap: concreteDisplacementTexture,
-      displacementScale: 0.8,
+      displacementScale: 0.6,
     });
 
     const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-    planeMesh.position.z = -0.6;
-    planeMesh.position.x = 0.6;
+    planeMesh.position.z = -0.45;
+    planeMesh.position.x = 1;
     planeMesh.position.y = 2.8;
     planeMesh.receiveShadow = true;
     scene.add(planeMesh);
@@ -171,16 +186,20 @@ function Home() {
      */
 
     // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-    dirLight.shadow.bias = 0.00006;
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    dirLight.shadow.bias = 0.0000006;
 
-    dirLight.position.set(3, 4, 15);
+    dirLight.position.set(0, 1.7, 20);
+    dirLight.scale.x = 2;
     dirLight.castShadow = true;
     dirLight.shadow.mapSize.width = 1024 * 2;
     dirLight.shadow.mapSize.height = 1024 * 2;
     dirLight.shadow.radius = 1;
+
+    // const helper = new THREE.CameraHelper(dirLight.shadow.camera);
+    // scene.add(helper);
 
     scene.add(dirLight, ambientLight);
 
@@ -197,13 +216,14 @@ function Home() {
     /*
      * Div Positioning
      */
-    const baseScale = window.innerWidth < 1200 ? 0.0085 : 0.003;
+    let baseScale = window.innerWidth < 1200 ? 0.009 : 0.003;
 
     // WhoAmI
     const whoAmIElement = whoAmIRef.current;
     const whoAmIObject = new CSS3DObject(whoAmIElement);
-    whoAmIObject.position.set(5, 6, 0);
+    whoAmIObject.position.set(5, 9, 0);
     whoAmIObject.scale.set(baseScale, baseScale, baseScale);
+
     scene.add(whoAmIObject);
 
     // WhatIDo
@@ -211,19 +231,22 @@ function Home() {
     const whatIDoObject = new CSS3DObject(whatIDoElement);
     whatIDoObject.position.set(3, -4, 0);
     whatIDoObject.scale.set(baseScale, baseScale, baseScale);
+
     scene.add(whatIDoObject);
 
     // TalkToMe
     const TalkToMeElement = talkToMeRef.current;
     const TalkToMeObject = new CSS3DObject(TalkToMeElement);
-    TalkToMeObject.position.set(-6, -2, 0);
+    TalkToMeObject.position.set(-9, -2, 0);
     TalkToMeObject.scale.set(baseScale, baseScale, baseScale);
+
     scene.add(TalkToMeObject);
 
     // Home
     const homeBtn = document.querySelector(".home");
     if (homeBtn) {
       homeBtn.addEventListener("click", () => {
+        const tl = gsap.timeline();
         gsap.to(camera.position, {
           x: text.position.x,
           y: text.position.y,
@@ -333,11 +356,11 @@ function Home() {
       if (!mouseMoveScheduled) {
         mouseMoveScheduled = true;
         requestAnimationFrame(() => {
-          const relativeX = (e.clientX / window.innerWidth - 0.5) * 3;
-          const relativeY = (e.clientY / window.innerHeight - 0.5) * 3;
+          const relativeX = (e.clientX / window.innerWidth - 0.5) * 4;
+          const relativeY = (e.clientY / window.innerHeight - 0.5) * 2;
 
-          targetX = cameraFocus.x + relativeX * 1.45;
-          targetY = cameraFocus.y - relativeY * 1.45;
+          targetX = cameraFocus.x + relativeX * 0.95;
+          targetY = cameraFocus.y - relativeY * 0.95;
 
           mouseMoveScheduled = false;
         });
@@ -350,8 +373,8 @@ function Home() {
         const relativeX = (touch.clientX / window.innerWidth - 0.5) * 3;
         const relativeY = (touch.clientY / window.innerHeight - 0.5) * 3;
 
-        targetX = cameraFocus.x + relativeX * 2.45;
-        targetY = cameraFocus.y - relativeY * 2.45;
+        targetX = cameraFocus.x + relativeX * 3.45;
+        targetY = cameraFocus.y - relativeY * 3.45;
       }
     });
 
@@ -362,6 +385,16 @@ function Home() {
 
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
+
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+
+    const hdriLoader = new RGBELoader();
+    hdriLoader.load("/src/static/table_mountain_1_1k.hdr", function (texture) {
+      const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+      texture.dispose();
+      scene.environment = envMap;
+      scene.environmentIntensity = 1.2;
+    });
 
     // CSS Renderer for DOM elements
     const cssRenderer = new CSS3DRenderer();
@@ -382,25 +415,25 @@ function Home() {
 
     sizes = getCanvasSize();
 
-    const handleResize = () => {
-      sizes = getCanvasSize();
+    window.addEventListener("resize", () => {
+      sizes.width = window.innerWidth;
+      sizes.height = window.innerHeight;
 
       camera.aspect = sizes.width / sizes.height;
       camera.updateProjectionMatrix();
 
-      const maxPixelRatio = window.innerWidth >= 3000 ? 1.2 : 2;
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
-      cssRenderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
-    };
+      renderer.setSize(sizes.width, sizes.height);
+      cssRenderer.setSize(sizes.width, sizes.height);
+    });
 
-    window.addEventListener("resize", handleResize);
+    // window.addEventListener("resize", handleResize);
 
     // Animation
     const tick = () => {
       const parallaxX = targetX;
       const parallaxY = targetY;
-      camera.position.x += (parallaxX - camera.position.x) * 0.05;
-      camera.position.y += (parallaxY - camera.position.y) * 0.05;
+      camera.position.x += (parallaxX - camera.position.x) * 0.015;
+      camera.position.y += (parallaxY - camera.position.y) * 0.015;
 
       camera.lookAt(cameraFocus);
       renderer.render(scene, camera);
@@ -410,7 +443,7 @@ function Home() {
     tick();
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      // window.removeEventListener("resize", handleResize);
       renderer.dispose();
       textGeometry.dispose();
       scene.remove(text);

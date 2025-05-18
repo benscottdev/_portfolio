@@ -25,7 +25,7 @@ const WhoAmI = forwardRef((__, ref) => {
           Sequi illum veniam debitis ad molestiae cupiditate ex commodi.
         </p>
       </div>
-      <div className="third">
+      <div className="third no-border">
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
       </div>
     </div>

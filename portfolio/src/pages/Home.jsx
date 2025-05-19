@@ -7,9 +7,9 @@ import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import typeFace from "../static/fonts/Akira.typeface.json";
 import WhoAmI from "../components/WhoIAm";
-import WhatIDo from "../components/WhatIDo";
 import TalkToMe from "../components/TalkToMe";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
+import WhatIDoPage from "../pages/WhatIDoPage";
 
 function Home() {
   const canvasRef = useRef();
@@ -171,7 +171,7 @@ function Home() {
       aoMap: concreteAOTexture,
       normalMap: concreteNormalTexture,
       displacementMap: concreteDisplacementTexture,
-      displacementScale: 0.6,
+      displacementScale: 0.61,
     });
 
     const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
@@ -227,12 +227,12 @@ function Home() {
     scene.add(whoAmIObject);
 
     // WhatIDo
-    const whatIDoElement = whatIDoRef.current;
-    const whatIDoObject = new CSS3DObject(whatIDoElement);
-    whatIDoObject.position.set(3, -4, 0);
-    whatIDoObject.scale.set(baseScale, baseScale, baseScale);
+    // const whatIDoElement = whatIDoRef.current;
+    // const whatIDoObject = new CSS3DObject(whatIDoElement);
+    // whatIDoObject.position.set(3, -4, 0);
+    // whatIDoObject.scale.set(baseScale, baseScale, baseScale);
 
-    scene.add(whatIDoObject);
+    // scene.add(whatIDoObject);
 
     // TalkToMe
     const TalkToMeElement = talkToMeRef.current;
@@ -296,30 +296,30 @@ function Home() {
     }
 
     // What I Do
-    const whatIdoBtn = document.querySelector(".whatido");
-    if (whatIdoBtn) {
-      whatIdoBtn.addEventListener("click", () => {
-        gsap.to(camera.position, {
-          x: whatIDoObject.position.x,
-          y: whatIDoObject.position.y,
-          duration: 1,
-          ease: "power2.inOut",
-        });
+    // const whatIdoBtn = document.querySelector(".whatido");
+    // if (whatIdoBtn) {
+    //   whatIdoBtn.addEventListener("click", () => {
+    //     gsap.to(camera.position, {
+    //       x: whatIDoObject.position.x,
+    //       y: whatIDoObject.position.y,
+    //       duration: 1,
+    //       ease: "power2.inOut",
+    //     });
 
-        gsap.to(lookAtTarget, {
-          x: whatIDoObject.position.x,
-          y: whatIDoObject.position.y,
-          z: whatIDoObject.position.z,
-          duration: 1,
-          ease: "power2.inOut",
-          onUpdate: () => {
-            cameraFocus.set(lookAtTarget.x, lookAtTarget.y, lookAtTarget.z);
-            targetX = lookAtTarget.x;
-            targetY = lookAtTarget.y;
-          },
-        });
-      });
-    }
+    //     gsap.to(lookAtTarget, {
+    //       x: whatIDoObject.position.x,
+    //       y: whatIDoObject.position.y,
+    //       z: whatIDoObject.position.z,
+    //       duration: 1,
+    //       ease: "power2.inOut",
+    //       onUpdate: () => {
+    //         cameraFocus.set(lookAtTarget.x, lookAtTarget.y, lookAtTarget.z);
+    //         targetX = lookAtTarget.x;
+    //         targetY = lookAtTarget.y;
+    //       },
+    //     });
+    //   });
+    // }
 
     // Talk To Me
     const talkToMeBtn = document.querySelector(".talktome");
@@ -393,7 +393,7 @@ function Home() {
       const envMap = pmremGenerator.fromEquirectangular(texture).texture;
       texture.dispose();
       scene.environment = envMap;
-      scene.environmentIntensity = 1.2;
+      scene.environmentIntensity = 0.2;
     });
 
     // CSS Renderer for DOM elements
@@ -454,8 +454,8 @@ function Home() {
     <div ref={containerRef} style={{ position: "relative", width: "100%", height: "100%" }}>
       <canvas ref={canvasRef} className="webgl" />
       <WhoAmI ref={whoAmIRef} />
-      <WhatIDo ref={whatIDoRef} />
       <TalkToMe ref={talkToMeRef} />
+      <WhatIDoPage />
     </div>
   );
 }

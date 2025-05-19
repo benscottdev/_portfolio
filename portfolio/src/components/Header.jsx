@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 
@@ -19,34 +19,135 @@ function Header() {
     });
   };
 
+  const togglePage = () => {
+    const whatIDoPage = document.querySelector(".whatIDoPage");
+    const openTl = gsap.timeline();
+
+    if (!whatIDoPage.classList.contains("active")) {
+      whatIDoPage.classList.add("active");
+      openTl.to(whatIDoPage, {
+        display: "block",
+      });
+
+      openTl.to(
+        whatIDoPage,
+        {
+          opacity: 1,
+          duration: 0.8,
+        },
+        "-=0.6"
+      );
+    }
+  };
+
+  const toggleClose = (e) => {
+    const whatIDoPage = document.querySelector(".whatIDoPage");
+    e.preventDefault();
+    if (whatIDoPage.classList.contains("active")) {
+      const closeTl = gsap.timeline();
+      whatIDoPage.classList.remove("active");
+      closeTl.to(whatIDoPage, {
+        opacity: 0,
+        duration: 0.3,
+      });
+      closeTl.to(whatIDoPage, {
+        display: "none",
+      });
+    }
+  };
+
+  const toggleMenu = () => {
+    const headerWrapper = document.querySelector(".wrapper");
+    const headerLinks = document.querySelectorAll(".linkWrapper");
+    const hamOne = document.getElementById("ham1");
+    const hamTwo = document.getElementById("ham2");
+
+    if (headerWrapper.classList.contains("active")) {
+      const closeTl = gsap.timeline();
+      headerWrapper.classList.remove("active");
+      headerLinks.forEach((item) => {
+        closeTl.to(item, {
+          opacity: 0,
+          y: -20,
+          duration: 0.1,
+          ease: "power2.in",
+        });
+      });
+      gsap.to(hamOne, {
+        marginBottom: 10,
+        rotate: 0,
+      });
+      gsap.to(hamTwo, {
+        rotate: 0,
+      });
+
+      closeTl.to(headerWrapper, {
+        autoAlpha: 0,
+        duration: 0.4,
+      });
+    } else if (!headerWrapper.classList.contains("active")) {
+      const openTl = gsap.timeline();
+      headerWrapper.classList.add("active");
+      gsap.to(hamOne, {
+        marginBottom: 20,
+        rotate: 45,
+      });
+      gsap.to(hamTwo, {
+        rotate: -45,
+      });
+      openTl.to(headerWrapper, {
+        autoAlpha: 1,
+        opacity: 1,
+        duration: 0.7,
+      });
+      headerLinks.forEach((item) => {
+        openTl.fromTo(
+          item,
+          { y: -20, opacity: 0 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.2,
+            ease: "power2.in",
+          }
+        );
+      });
+    }
+  };
+
   return (
     <div className="main-navigation">
+      <div className="hamburger" onClick={toggleMenu}>
+        <span id="ham1"></span>
+        <span id="ham2"></span>
+      </div>
+
       <div className="wrapper">
         <div className="homeLink">
-          <Link className=" home linkWrapper" to="/" onMouseOver={handleHover} onMouseOut={handleLeave}>
+          <Link className=" home linkWrapper" to="/" onMouseOver={handleHover} onMouseOut={handleLeave} onClick={toggleClose}>
             <span className="link">home</span>
             <span className="link bottomLink">home</span>
           </Link>
         </div>
 
         <div className="whoLink">
-          <Link className=" whoiam linkWrapper" to="/whoiam" onMouseOver={handleHover} onMouseOut={handleLeave}>
-            <span className="link">who</span>
-            <span className="link bottomLink">am I </span>
+          <Link className=" whoiam linkWrapper" to="/whoiam" onMouseOver={handleHover} onMouseOut={handleLeave} onClick={toggleClose}>
+            <span className="link">who am i</span>
+            <span className="link bottomLink">who am i</span>
           </Link>
         </div>
 
         <div className="whatLink">
-          <a className=" whatido linkWrapper" to="/whatido" onMouseOver={handleHover} onMouseOut={handleLeave}>
-            <span className="link">what</span>
-            <span className="link bottomLink">i do</span>
-          </a>
+          <Link className=" whatido linkWrapper" to="/whatido" onMouseOver={handleHover} onMouseOut={handleLeave} onClick={togglePage}>
+            <span className="link">what i do</span>
+            <span className="link bottomLink">what i do</span>
+          </Link>
         </div>
 
         <div className="talkLink">
-          <Link className=" talktome linkWrapper" to="/talktome" onMouseOver={handleHover} onMouseOut={handleLeave}>
-            <span className="link">chat</span>
-            <span className="link bottomLink">with me</span>
+          <Link className=" talktome linkWrapper" to="/talktome" onMouseOver={handleHover} onMouseOut={handleLeave} onClick={toggleClose}>
+            <span className="link">talk</span>
+            <span className="link bottomLink">talk</span>
           </Link>
         </div>
       </div>

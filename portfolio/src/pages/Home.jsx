@@ -31,6 +31,7 @@ function Home() {
     const camera = new THREE.PerspectiveCamera(isMobile ? 30 : 15, sizes.width / sizes.height, 0.1, 100);
 
     camera.position.set(0, 0, 12);
+    // camera.position.set(0, 0, 92);
     scene.add(camera);
 
     /*
@@ -81,11 +82,10 @@ function Home() {
     metalNormalTexture.wrapT = THREE.RepeatWrapping;
 
     const metalTexture = new THREE.MeshStandardMaterial({
-      color: "darkgrey",
+      color: "grey",
       map: metalColorTexture,
-      // aoMap: metalAOTexture,
-      roughness: 0.1,
-      metalness: 0.8,
+      roughness: 0.2,
+      metalness: 0.9,
       normalMap: metalNormalTexture,
     });
 
@@ -140,22 +140,43 @@ function Home() {
       font,
       size: window.innerWidth < 1500 ? 0.25 : 0.3,
       depth: 0.1,
-      curveSegments: 8,
+      curveSegments: 12,
       bevelSegments: 4,
       bevelEnabled: true,
       bevelThickness: 0.1,
-      bevelSize: 0.0055,
+      bevelSize: 0.005,
     });
     textGeometry.center();
     textGeometry.setAttribute("uv2", new THREE.BufferAttribute(textGeometry.attributes.uv.array, 2));
 
     const text = new THREE.Mesh(textGeometry, metalTexture);
-
     text.castShadow = true;
     text.receiveShadow = true;
     textGeometry.computeBoundingBox();
     textGeometry.computeVertexNormals();
     scene.add(text);
+
+    const subText = new TextGeometry("web designer / developer", {
+      font,
+      size: window.innerWidth < 1500 ? 0.05 : 0.3,
+      depth: 0.1,
+      curveSegments: 12,
+      bevelSegments: 4,
+      bevelEnabled: true,
+      bevelThickness: 0.1,
+      bevelSize: 0.005,
+    });
+    subText.center();
+    subText.setAttribute("uv2", new THREE.BufferAttribute(subText.attributes.uv.array, 2));
+
+    const text2 = new THREE.Mesh(subText, metalTexture);
+    text2.position.y = -0.225;
+    text2.position.x = -0.23;
+    text2.castShadow = true;
+    text2.receiveShadow = true;
+    subText.computeBoundingBox();
+    subText.computeVertexNormals();
+    scene.add(text2);
 
     /*
      * Geometries
@@ -171,14 +192,15 @@ function Home() {
       aoMap: concreteAOTexture,
       normalMap: concreteNormalTexture,
       displacementMap: concreteDisplacementTexture,
-      displacementScale: 0.61,
+      displacementScale: 0.63,
     });
 
     const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
     planeMesh.position.z = -0.45;
-    planeMesh.position.x = 1;
+    planeMesh.position.x = 0.75;
     planeMesh.position.y = 2.8;
     planeMesh.receiveShadow = true;
+    planeMesh.castShadow = true;
     scene.add(planeMesh);
 
     /*
@@ -186,22 +208,36 @@ function Home() {
      */
 
     // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.2);
+    const dirLightHelp = new THREE.DirectionalLight(dirLight);
+    dirLight.decay = 2;
+    // scene.add(dirLightHelp);
     dirLight.shadow.bias = 0.0000006;
-
-    dirLight.position.set(0, 1.7, 20);
-    dirLight.scale.x = 2;
+    dirLight.lookAt(0, 0, 0);
+    dirLight.position.set(1, 1, 1);
     dirLight.castShadow = true;
-    dirLight.shadow.mapSize.width = 1024 * 2;
-    dirLight.shadow.mapSize.height = 1024 * 2;
-    dirLight.shadow.radius = 1;
+
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, 7);
+    const dirLightHelp2 = new THREE.DirectionalLightHelper(dirLight2);
+    // scene.add(dirLightHelp2);
+    dirLight2.shadow.bias = 0.0000006;
+    dirLight2.position.set(1, 10, 0.5);
+    dirLight2.castShadow = true;
+
+    const dirLight3 = new THREE.DirectionalLight(0xffffff, 0.3);
+    const dirLightHelp3 = new THREE.DirectionalLightHelper(dirLight3);
+    // scene.add(dirLightHelp3);
+    dirLight3.shadow.bias = 0.0000006;
+
+    dirLight3.position.set(0, -0.3, 3);
+    dirLight3.castShadow = true;
+    dirLight3.lookAt(0, 0, 0);
 
     // const helper = new THREE.CameraHelper(dirLight.shadow.camera);
     // scene.add(helper);
 
-    scene.add(dirLight, ambientLight);
+    scene.add(dirLight, dirLight2, dirLight3);
 
     // Camera
     const cameraFocus = new THREE.Vector3();
@@ -225,14 +261,6 @@ function Home() {
     whoAmIObject.scale.set(baseScale, baseScale, baseScale);
 
     scene.add(whoAmIObject);
-
-    // WhatIDo
-    // const whatIDoElement = whatIDoRef.current;
-    // const whatIDoObject = new CSS3DObject(whatIDoElement);
-    // whatIDoObject.position.set(3, -4, 0);
-    // whatIDoObject.scale.set(baseScale, baseScale, baseScale);
-
-    // scene.add(whatIDoObject);
 
     // TalkToMe
     const TalkToMeElement = talkToMeRef.current;
@@ -295,32 +323,6 @@ function Home() {
       });
     }
 
-    // What I Do
-    // const whatIdoBtn = document.querySelector(".whatido");
-    // if (whatIdoBtn) {
-    //   whatIdoBtn.addEventListener("click", () => {
-    //     gsap.to(camera.position, {
-    //       x: whatIDoObject.position.x,
-    //       y: whatIDoObject.position.y,
-    //       duration: 1,
-    //       ease: "power2.inOut",
-    //     });
-
-    //     gsap.to(lookAtTarget, {
-    //       x: whatIDoObject.position.x,
-    //       y: whatIDoObject.position.y,
-    //       z: whatIDoObject.position.z,
-    //       duration: 1,
-    //       ease: "power2.inOut",
-    //       onUpdate: () => {
-    //         cameraFocus.set(lookAtTarget.x, lookAtTarget.y, lookAtTarget.z);
-    //         targetX = lookAtTarget.x;
-    //         targetY = lookAtTarget.y;
-    //       },
-    //     });
-    //   });
-    // }
-
     // Talk To Me
     const talkToMeBtn = document.querySelector(".talktome");
     if (talkToMeBtn) {
@@ -356,8 +358,8 @@ function Home() {
       if (!mouseMoveScheduled) {
         mouseMoveScheduled = true;
         requestAnimationFrame(() => {
-          const relativeX = (e.clientX / window.innerWidth - 0.5) * 4;
-          const relativeY = (e.clientY / window.innerHeight - 0.5) * 2;
+          const relativeX = (e.clientX / window.innerWidth - 0.5) * 3;
+          const relativeY = (e.clientY / window.innerHeight - 0.5) * 3;
 
           targetX = cameraFocus.x + relativeX * 0.95;
           targetY = cameraFocus.y - relativeY * 0.95;
@@ -393,7 +395,7 @@ function Home() {
       const envMap = pmremGenerator.fromEquirectangular(texture).texture;
       texture.dispose();
       scene.environment = envMap;
-      scene.environmentIntensity = 0.2;
+      scene.environmentIntensity = 0;
     });
 
     // CSS Renderer for DOM elements
@@ -432,8 +434,8 @@ function Home() {
     const tick = () => {
       const parallaxX = targetX;
       const parallaxY = targetY;
-      camera.position.x += (parallaxX - camera.position.x) * 0.015;
-      camera.position.y += (parallaxY - camera.position.y) * 0.015;
+      camera.position.x += (parallaxX - camera.position.x) * 0.02;
+      camera.position.y += (parallaxY - camera.position.y) * 0.02;
 
       camera.lookAt(cameraFocus);
       renderer.render(scene, camera);

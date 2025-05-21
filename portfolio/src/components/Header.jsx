@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
+import LiveClock from "./LiveClock";
 
 function Header() {
   const handleHover = (e) => {
@@ -58,7 +59,7 @@ function Header() {
 
   const toggleMenu = () => {
     const headerWrapper = document.querySelector(".wrapper");
-    const headerLinks = document.querySelectorAll(".linkWrapper");
+    const headerLinks = document.querySelectorAll(".headerItem");
     const hamOne = document.getElementById("ham1");
     const hamTwo = document.getElementById("ham2");
 
@@ -68,7 +69,7 @@ function Header() {
       headerLinks.forEach((item) => {
         closeTl.to(item, {
           opacity: 0,
-          y: -20,
+          y: -10,
           duration: 0.1,
           ease: "power2.in",
         });
@@ -84,10 +85,12 @@ function Header() {
       closeTl.to(headerWrapper, {
         autoAlpha: 0,
         duration: 0.4,
+        height: "0px",
       });
     } else if (!headerWrapper.classList.contains("active")) {
       const openTl = gsap.timeline();
       headerWrapper.classList.add("active");
+
       gsap.to(hamOne, {
         marginBottom: 20,
         rotate: 45,
@@ -95,20 +98,26 @@ function Header() {
       gsap.to(hamTwo, {
         rotate: -45,
       });
-      openTl.to(headerWrapper, {
-        autoAlpha: 1,
-        opacity: 1,
-        duration: 0.7,
-      });
+      openTl.fromTo(
+        headerWrapper,
+        { height: "0px" },
+        {
+          autoAlpha: 1,
+          opacity: 1,
+          height: "400px",
+          duration: 0.7,
+        }
+      );
+
       headerLinks.forEach((item) => {
         openTl.fromTo(
           item,
-          { y: -20, opacity: 0 },
+          { y: 5, opacity: 0 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.2,
-            ease: "power2.in",
+            duration: 0.25,
+            ease: "power2.out",
           }
         );
       });
@@ -124,31 +133,43 @@ function Header() {
 
       <div className="wrapper">
         <div className="homeLink">
-          <Link className=" home linkWrapper" to="/" onMouseOver={handleHover} onMouseOut={handleLeave} onClick={toggleClose}>
+          <Link className=" home linkWrapper headerItem" to="/" onMouseOver={handleHover} onMouseOut={handleLeave} onClick={toggleClose}>
             <span className="link">home</span>
             <span className="link bottomLink">home</span>
           </Link>
         </div>
 
         <div className="whoLink">
-          <Link className=" whoiam linkWrapper" to="/whoiam" onMouseOver={handleHover} onMouseOut={handleLeave} onClick={toggleClose}>
+          <Link className=" whoiam linkWrapper headerItem" to="/whoiam" onMouseOver={handleHover} onMouseOut={handleLeave} onClick={toggleClose}>
             <span className="link">who am i</span>
             <span className="link bottomLink">who am i</span>
           </Link>
         </div>
 
         <div className="whatLink">
-          <Link className=" whatido linkWrapper" to="/whatido" onMouseOver={handleHover} onMouseOut={handleLeave} onClick={togglePage}>
+          <Link className=" whatido linkWrapper headerItem" to="/whatido" onMouseOver={handleHover} onMouseOut={handleLeave} onClick={togglePage}>
             <span className="link">what i do</span>
             <span className="link bottomLink">what i do</span>
           </Link>
         </div>
 
         <div className="talkLink">
-          <Link className=" talktome linkWrapper" to="/talktome" onMouseOver={handleHover} onMouseOut={handleLeave} onClick={toggleClose}>
+          <Link className=" talktome linkWrapper headerItem" to="/talktome" onMouseOver={handleHover} onMouseOut={handleLeave} onClick={toggleClose}>
             <span className="link">talk</span>
             <span className="link bottomLink">talk</span>
           </Link>
+        </div>
+
+        <div className="info">
+          <div className="clock headerItem">
+            <p>AUSTRALIA/SYD:</p>
+            <LiveClock />
+          </div>
+
+          <div className="freelance headerItem">
+            <span className="availableIcon"></span>
+            <p>Available for Freelance</p>
+          </div>
         </div>
       </div>
     </div>

@@ -158,9 +158,9 @@ function Home() {
 
     const subText = new TextGeometry("web designer / developer", {
       font,
-      size: window.innerWidth < 1500 ? 0.05 : 0.3,
+      size: window.innerWidth < 1500 ? 0.05 : 0.07,
       depth: 0.1,
-      curveSegments: 12,
+      curveSegments: 6,
       bevelSegments: 4,
       bevelEnabled: true,
       bevelThickness: 0.1,
@@ -171,7 +171,7 @@ function Home() {
 
     const text2 = new THREE.Mesh(subText, metalTexture);
     text2.position.y = -0.225;
-    text2.position.x = -0.23;
+    text2.position.x = -0.64;
     text2.castShadow = true;
     text2.receiveShadow = true;
     subText.computeBoundingBox();
@@ -183,7 +183,7 @@ function Home() {
      */
 
     // Plane Geometry
-    const planeGeometry = new THREE.PlaneGeometry(30, 30, 30, 30);
+    const planeGeometry = new THREE.PlaneGeometry(30, 30, 20, 20);
     const planeMaterial = new THREE.MeshStandardMaterial({
       color: "#000",
       roughnessMap: concreteRoughnessTexture,
@@ -216,22 +216,20 @@ function Home() {
     dirLight.shadow.bias = 0.0000006;
     dirLight.lookAt(0, 0, 0);
     dirLight.position.set(1, 1, 1);
-    dirLight.castShadow = true;
+    // dirLight.castShadow = true;
 
     const dirLight2 = new THREE.DirectionalLight(0xffffff, 7);
     const dirLightHelp2 = new THREE.DirectionalLightHelper(dirLight2);
     // scene.add(dirLightHelp2);
     dirLight2.shadow.bias = 0.0000006;
-    dirLight2.position.set(1, 10, 0.5);
+    dirLight2.position.set(2, 10, 0.3);
     dirLight2.castShadow = true;
 
     const dirLight3 = new THREE.DirectionalLight(0xffffff, 0.3);
     const dirLightHelp3 = new THREE.DirectionalLightHelper(dirLight3);
     // scene.add(dirLightHelp3);
-    dirLight3.shadow.bias = 0.0000006;
 
     dirLight3.position.set(0, -0.3, 3);
-    dirLight3.castShadow = true;
     dirLight3.lookAt(0, 0, 0);
 
     // const helper = new THREE.CameraHelper(dirLight.shadow.camera);
@@ -383,7 +381,8 @@ function Home() {
     // Renderers
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setSize(sizes.width, sizes.height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const cappedPixelRatio = window.innerWidth > 2500 ? 1 : Math.min(window.devicePixelRatio, 2);
+    renderer.setPixelRatio(cappedPixelRatio);
 
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -434,8 +433,8 @@ function Home() {
     const tick = () => {
       const parallaxX = targetX;
       const parallaxY = targetY;
-      camera.position.x += (parallaxX - camera.position.x) * 0.02;
-      camera.position.y += (parallaxY - camera.position.y) * 0.02;
+      camera.position.x += (parallaxX - camera.position.x) * 0.04;
+      camera.position.y += (parallaxY - camera.position.y) * 0.04;
 
       camera.lookAt(cameraFocus);
       renderer.render(scene, camera);

@@ -115,7 +115,7 @@ p {
 }
 .main-navigation .wrapper .info .freelance {
   display: flex;
-  gap: 5px;
+  gap: 10px;
   align-items: center;
   justify-content: center;
 }
@@ -128,14 +128,14 @@ p {
 }
 .main-navigation .wrapper .info .freelance p {
   font-size: 16px;
-  margin-top: 2px;
+  margin-top: 1px;
   font-weight: 100;
 }
 .main-navigation .wrapper .linkWrapper {
   height: 23px;
   cursor: pointer;
   display: flex;
-  line-height: 24px;
+  line-height: 23px;
   justify-content: flex-start;
   flex-direction: column;
   overflow: hidden;

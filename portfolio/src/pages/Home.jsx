@@ -1,6 +1,6 @@
 import React from "react";
 import { gsap } from "gsap";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { CSS3DRenderer, CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
@@ -8,15 +8,16 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import typeFace from "../static/fonts/Akira.typeface.json";
 import WhoAmI from "../components/WhoIAm";
 import TalkToMe from "../components/TalkToMe";
-import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import WhatIDoPage from "../pages/WhatIDoPage";
+import Loader from "../components/Loader";
 
 function Home() {
   const canvasRef = useRef();
   const whoAmIRef = useRef();
-  const whatIDoRef = useRef();
   const talkToMeRef = useRef();
   const containerRef = useRef();
+  const loaderRef = useRef();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -30,14 +31,48 @@ function Home() {
     const isMobile = window.innerWidth < 1000;
     const camera = new THREE.PerspectiveCamera(isMobile ? 30 : 15, sizes.width / sizes.height, 0.1, 100);
 
-    camera.position.set(0, 0, 12);
+    camera.position.set(0, 0, 18);
     // camera.position.set(0, 0, 92);
     scene.add(camera);
+
+    const loadingManager = new THREE.LoadingManager();
+    const progressBar = document.querySelector(".progressBar");
+    const progressBarPercent = document.querySelector(".progressBar h1");
+
+    // Runs on completion of all texture load
+    loadingManager.onLoad = () => {
+      const tl = gsap.timeline();
+      gsap.to(progressBarPercent, {
+        opacity: 0,
+        duration: 0.5,
+      });
+
+      tl.to(progressBar, {
+        height: "100dvh",
+        duration: 1,
+        delay: 0.4,
+      });
+
+      tl.to(loaderRef.current, {
+        duration: 0.5,
+        autoAlpha: 0,
+        ease: "power2.inOut",
+        onComplete: () => {
+          setLoading(false);
+        },
+      });
+    };
+
+    loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
+      const percentage = (itemsLoaded / itemsTotal) * 100;
+      progressBar.style.width = `${percentage}%`;
+      progressBarPercent.innerHTML = `${percentage.toFixed(1)}%`;
+    };
 
     /*
      * Textures
      */
-    const textureLoader = new THREE.TextureLoader();
+    const textureLoader = new THREE.TextureLoader(loadingManager);
 
     // Metal Look Texture
     const metalColorTexture = textureLoader.load("/textures/Metal003_2K-JPG/Metal003_2K-JPG_Color.jpg");
@@ -156,7 +191,7 @@ function Home() {
     textGeometry.computeVertexNormals();
     scene.add(text);
 
-    const subText = new TextGeometry("web designer / developer", {
+    const subText = new TextGeometry("web developer", {
       font,
       size: window.innerWidth < 1500 ? 0.05 : 0.07,
       depth: 0.1,
@@ -171,12 +206,12 @@ function Home() {
 
     const text2 = new THREE.Mesh(subText, metalTexture);
     text2.position.y = -0.225;
-    text2.position.x = -0.64;
+    text2.position.x = -1.02;
     text2.castShadow = true;
     text2.receiveShadow = true;
     subText.computeBoundingBox();
     subText.computeVertexNormals();
-    scene.add(text2);
+    // scene.add(text2);
 
     /*
      * Geometries
@@ -356,8 +391,8 @@ function Home() {
       if (!mouseMoveScheduled) {
         mouseMoveScheduled = true;
         requestAnimationFrame(() => {
-          const relativeX = (e.clientX / window.innerWidth - 0.5) * 3;
-          const relativeY = (e.clientY / window.innerHeight - 0.5) * 3;
+          const relativeX = (e.clientX / window.innerWidth - 0.5) * 4;
+          const relativeY = (e.clientY / window.innerHeight - 0.5) * 4;
 
           targetX = cameraFocus.x + relativeX * 0.95;
           targetY = cameraFocus.y - relativeY * 0.95;
@@ -370,8 +405,8 @@ function Home() {
     window.addEventListener("touchmove", (e) => {
       if (e.touches.length === 1) {
         const touch = e.touches[0];
-        const relativeX = (touch.clientX / window.innerWidth - 0.5) * 3;
-        const relativeY = (touch.clientY / window.innerHeight - 0.5) * 3;
+        const relativeX = (touch.clientX / window.innerWidth - 0.5) * 2;
+        const relativeY = (touch.clientY / window.innerHeight - 0.5) * 2;
 
         targetX = cameraFocus.x + relativeX * 3.45;
         targetY = cameraFocus.y - relativeY * 3.45;
@@ -386,16 +421,6 @@ function Home() {
 
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
-
-    const pmremGenerator = new THREE.PMREMGenerator(renderer);
-
-    const hdriLoader = new RGBELoader();
-    hdriLoader.load("/src/static/table_mountain_1_1k.hdr", function (texture) {
-      const envMap = pmremGenerator.fromEquirectangular(texture).texture;
-      texture.dispose();
-      scene.environment = envMap;
-      scene.environmentIntensity = 0;
-    });
 
     // CSS Renderer for DOM elements
     const cssRenderer = new CSS3DRenderer();
@@ -433,8 +458,8 @@ function Home() {
     const tick = () => {
       const parallaxX = targetX;
       const parallaxY = targetY;
-      camera.position.x += (parallaxX - camera.position.x) * 0.04;
-      camera.position.y += (parallaxY - camera.position.y) * 0.04;
+      camera.position.x += (parallaxX - camera.position.x) * 0.05;
+      camera.position.y += (parallaxY - camera.position.y) * 0.05;
 
       camera.lookAt(cameraFocus);
       renderer.render(scene, camera);
@@ -452,12 +477,17 @@ function Home() {
   }, []);
 
   return (
-    <div ref={containerRef} style={{ position: "relative", width: "100%", height: "100%" }}>
-      <canvas ref={canvasRef} className="webgl" />
-      <WhoAmI ref={whoAmIRef} />
-      <TalkToMe ref={talkToMeRef} />
-      <WhatIDoPage />
-    </div>
+    <>
+      <Loader ref={loaderRef} />
+
+      <div ref={containerRef} style={{ position: "relative", width: "100%", height: "100%" }}>
+        <canvas ref={canvasRef} className="webgl" />
+
+        <WhoAmI ref={whoAmIRef} />
+        <TalkToMe ref={talkToMeRef} />
+        <WhatIDoPage />
+      </div>
+    </>
   );
 }
 export default Home;

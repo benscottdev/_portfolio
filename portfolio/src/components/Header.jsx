@@ -20,43 +20,6 @@ function Header() {
     });
   };
 
-  const togglePage = () => {
-    const whatIDoPage = document.querySelector(".whatIDoPage");
-    const openTl = gsap.timeline();
-
-    if (!whatIDoPage.classList.contains("active")) {
-      whatIDoPage.classList.add("active");
-      openTl.to(whatIDoPage, {
-        display: "block",
-      });
-
-      openTl.to(
-        whatIDoPage,
-        {
-          opacity: 1,
-          duration: 0.8,
-        },
-        "-=0.6"
-      );
-    }
-  };
-
-  const toggleClose = (e) => {
-    const whatIDoPage = document.querySelector(".whatIDoPage");
-    e.preventDefault();
-    if (whatIDoPage.classList.contains("active")) {
-      const closeTl = gsap.timeline();
-      whatIDoPage.classList.remove("active");
-      closeTl.to(whatIDoPage, {
-        opacity: 0,
-        duration: 0.3,
-      });
-      closeTl.to(whatIDoPage, {
-        display: "none",
-      });
-    }
-  };
-
   const toggleMenu = () => {
     const headerWrapper = document.querySelector(".wrapper");
     const headerLinks = document.querySelectorAll(".headerItem");
@@ -66,14 +29,7 @@ function Header() {
     if (headerWrapper.classList.contains("active")) {
       const closeTl = gsap.timeline();
       headerWrapper.classList.remove("active");
-      headerLinks.forEach((item) => {
-        closeTl.to(item, {
-          opacity: 0,
-          y: -10,
-          duration: 0.1,
-          ease: "power2.in",
-        });
-      });
+
       gsap.to(hamOne, {
         marginBottom: 10,
         rotate: 0,
@@ -85,7 +41,6 @@ function Header() {
       closeTl.to(headerWrapper, {
         autoAlpha: 0,
         duration: 0.4,
-        height: "0px",
       });
     } else if (!headerWrapper.classList.contains("active")) {
       const openTl = gsap.timeline();
@@ -120,6 +75,45 @@ function Header() {
             ease: "power2.out",
           }
         );
+      });
+    }
+  };
+
+  const togglePage = () => {
+    toggleMenu();
+    const whatIDoPage = document.querySelector(".whatIDoPage");
+    const openTl = gsap.timeline();
+
+    if (!whatIDoPage.classList.contains("active")) {
+      whatIDoPage.classList.add("active");
+      openTl.to(whatIDoPage, {
+        display: "block",
+      });
+
+      openTl.to(
+        whatIDoPage,
+        {
+          opacity: 1,
+          duration: 0.8,
+        },
+        "-=0.6"
+      );
+    }
+  };
+
+  const toggleClose = (e) => {
+    toggleMenu();
+    const whatIDoPage = document.querySelector(".whatIDoPage");
+    e.preventDefault();
+    if (whatIDoPage.classList.contains("active")) {
+      const closeTl = gsap.timeline();
+      whatIDoPage.classList.remove("active");
+      closeTl.to(whatIDoPage, {
+        opacity: 0,
+        duration: 0.3,
+      });
+      closeTl.to(whatIDoPage, {
+        display: "none",
       });
     }
   };

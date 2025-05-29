@@ -11,16 +11,19 @@ const WhoAmI = forwardRef((__, ref) => {
 
   return (
     <div className="whoAmIContainer" ref={ref}>
-      <div className="half">
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam facilis recusandae amet exercitationem assumenda. Hic, ducimus sapiente! Impedit, beatae. Perferendis ducimus quos nemo laudantium enim aperiam magni odio dignissimos maxime.
-          <br />
-          <br />
-          Quisquam facilis recusandae amet exercitationem assumenda. Hic, ducimus sapiente! Impedit, beatae. Perferendis ducimus quos nemo laudantium enim aperiam magni odio dignissimos maxime.
-        </p>
-      </div>
-      <div className="image">
-        <img className="portrait" src="./src/static/Ben_Ghibli.png" alt="" />
+      <div className="whoAmIContainer" ref={ref}>
+        <div className="half">
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam facilis recusandae amet exercitationem assumenda. Hic, ducimus sapiente! Impedit, beatae. Perferendis ducimus quos nemo laudantium enim aperiam magni odio dignissimos maxime.
+            <br />
+            <br />
+            Quisquam facilis recusandae amet exercitationem assumenda. Hic, ducimus sapiente! Impedit, beatae. Perferendis ducimus quos nemo laudantium enim aperiam magni odio dignissimos maxime.
+          </p>
+        </div>
+
+        <div className="image">
+          <img className="portrait" src="./src/static/Ben_Ghibli.png" alt="" />
+        </div>
       </div>
     </div>
   );

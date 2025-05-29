@@ -34,6 +34,10 @@ p {
   }
 }
 
+.max-width {
+  max-width: 1500px;
+}
+
 .app {
   z-index: 99999;
 }
@@ -92,8 +96,8 @@ p {
 .main-navigation .wrapper {
   opacity: 0;
   padding: 30px;
-  background-color: rgba(0, 0, 0, 0.418);
-  backdrop-filter: blur(5px);
+  background-color: rgba(61, 61, 61, 0.434);
+  backdrop-filter: blur(10px);
   width: 255px;
   height: 400px;
   display: flex;
@@ -122,17 +126,18 @@ p {
 .main-navigation .wrapper .info .freelance .availableIcon {
   display: block;
   position: relative;
-  width: 15px;
-  height: 15px;
+  width: 10px;
+  height: 10px;
   background-color: rgb(138, 192, 126);
 }
 .main-navigation .wrapper .info .freelance p {
-  font-size: 16px;
+  font-size: 12px;
   margin-top: 1px;
   font-weight: 100;
+  color: white;
 }
 .main-navigation .wrapper .linkWrapper {
-  height: 23px;
+  height: 22px;
   cursor: pointer;
   display: flex;
   line-height: 23px;
@@ -147,13 +152,13 @@ p {
   font-size: 26px;
   font-family: "Helvetica", sans-serif;
   text-transform: uppercase;
-  color: #9498a1;
+  color: rgb(255, 255, 255);
   font-weight: 500;
   z-index: 999999999999;
   letter-spacing: -1px;
 }
 .main-navigation .wrapper .linkWrapper .link:visited {
-  color: #9498a1 !important;
+  color: white !important;
 }
 @media (max-width: 800px) {
   .main-navigation .wrapper .linkWrapper .link {
@@ -172,6 +177,11 @@ p {
   width: 100%;
   height: 90%;
 }
+@media (max-width: 1200px) {
+  .whoAmIContainer {
+    align-items: center;
+  }
+}
 .whoAmIContainer .half {
   padding: 0px 30px;
   height: 100%;
@@ -184,7 +194,7 @@ p {
   .whoAmIContainer .half {
     height: auto;
     max-width: none;
-    width: 90% !important;
+    width: 50% !important;
   }
 }
 .whoAmIContainer img {
@@ -224,7 +234,7 @@ p {
 }
 @media (max-width: 1200px) {
   .talkToMeContainer .half {
-    max-width: 90%;
+    max-width: 70%;
     height: auto;
   }
 }
@@ -236,24 +246,6 @@ p {
   font-weight: 100;
 }
 
-.whatIDoPage {
-  height: 100dvh;
-  width: 100dvw;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  background-color: rgb(35, 35, 35);
-  display: none;
-  opacity: 0;
-  z-index: 9;
-}
-
-.scrollable {
-  width: 90dvw;
-  height: 95dvh;
-  overflow: scroll;
-}
-
 .clock {
   display: flex;
   gap: 5px;
@@ -263,9 +255,142 @@ p {
   color: #9498a1;
   font-weight: 100;
 }
+.clock #clock {
+  color: orangered;
+  font-size: 12px;
+}
 .clock p {
   letter-spacing: -0.5px;
-  font-size: 16px;
+  font-size: 12px;
   margin-top: 2px;
   font-weight: 900;
+  color: white;
+}
+
+.whatIDoPage {
+  height: 100dvh;
+  width: 100dvw;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background: #e3e3e3;
+  background: linear-gradient(221deg, rgb(227, 227, 227) 50%, rgb(124, 124, 124) 100%);
+  display: none;
+  opacity: 0;
+  z-index: 9;
+}
+.whatIDoPage .container {
+  max-width: 1500px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.whatIDoPage .container .jobsWrapper {
+  height: 50dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 25%;
+}
+.whatIDoPage .container .jobsWrapper .job {
+  letter-spacing: -1px;
+  font-family: "Helvetica", sans-serif;
+  font-family: rgb(35, 35, 35);
+  font-size: 30px;
+  font-weight: 100;
+  transition: 300ms ease;
+}
+.whatIDoPage .container .jobsWrapper .job:hover {
+  color: orangered;
+}
+.whatIDoPage .container .jobPreview {
+  aspect-ratio: 16/9;
+  height: 50dvh;
+  border: 1px solid;
+}
+.whatIDoPage .wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  gap: 20px;
+}
+.whatIDoPage .wrapper .divider {
+  height: 50vh;
+  display: block;
+  width: 0.5px;
+  background-color: black;
+}
+.whatIDoPage .wrapper .contentWrapper {
+  max-width: 25%;
+}
+.whatIDoPage .wrapper .contentWrapper .itemCopyWrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-direction: column;
+  padding: 0px 20px;
+  height: 50dvh;
+  color: darkBodyCopy !important;
+}
+.whatIDoPage .wrapper .contentWrapper .itemCopyWrapper .itemCopyTop {
+  text-align: left;
+}
+.whatIDoPage .wrapper .contentWrapper .itemCopyWrapper .itemCopyTop h1 {
+  font-family: "Akira Expanded", sans-serif;
+  color: orangered;
+  letter-spacing: -1px;
+}
+.whatIDoPage .wrapper .contentWrapper .itemCopyWrapper .itemCopyTop p {
+  font-family: "Helvetica", sans-serif;
+  font-size: 14px;
+  color: rgb(35, 35, 35) !important;
+}
+.whatIDoPage .wrapper .contentWrapper .itemCopyWrapper .itemCopyBottom {
+  text-align: right;
+}
+.whatIDoPage .wrapper .contentWrapper .itemCopyWrapper .itemCopyBottom p {
+  font-family: "Helvetica", sans-serif;
+  font-size: 14px;
+  color: rgb(35, 35, 35) !important;
+}
+.whatIDoPage .wrapper .itemShowcase {
+  height: 50dvh;
+  aspect-ratio: 16/9;
+}
+.whatIDoPage .wrapper .itemShowcase img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.loader {
+  width: 100dvw;
+  height: 100dvh;
+  background-color: rgb(35, 35, 35);
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 999999;
+  will-change: opacity;
+}
+.loader .progressBar {
+  background-color: orangered;
+  height: 100px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  transition: width 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 20px;
+}
+.loader .progressBar h1 {
+  font-family: "Akira Expanded";
+  color: white;
 }

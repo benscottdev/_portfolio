@@ -15,6 +15,7 @@
 $main: #c9c9c9;
 $secondary: #b0b5b9;
 $bodyCopy: #9498a1;
+$darkBodyCopy: rgb(35, 35, 35);
 
 $bodyFont: "Helvetica", sans-serif;
 $linkFont: "Akira Expanded";
@@ -42,6 +43,10 @@ p {
   @media (max-width: 1200px) {
     font-size: 12px !important;
   }
+}
+
+.max-width {
+  max-width: 1500px;
 }
 
 .app {
@@ -106,9 +111,8 @@ p {
   .wrapper {
     opacity: 0;
     padding: 30px;
-    background-color: rgba(0, 0, 0, 0.418);
-    backdrop-filter: blur(5px);
-
+    background-color: rgba(61, 61, 61, 0.434);
+    backdrop-filter: blur(10px);
     width: 255px;
     height: 400px;
     display: flex;
@@ -137,22 +141,23 @@ p {
         .availableIcon {
           display: block;
           position: relative;
-          width: 15px;
-          height: 15px;
+          width: 10px;
+          height: 10px;
           background-color: rgb(138, 192, 126);
           // border: 1px solid white;
         }
 
         p {
-          font-size: 16px;
+          font-size: 12px;
           margin-top: 1px;
           font-weight: 100;
+          color: white;
         }
       }
     }
 
     .linkWrapper {
-      height: 23px;
+      height: 22px;
       cursor: pointer;
       display: flex;
       line-height: 23px;
@@ -167,13 +172,13 @@ p {
         font-size: 26px;
         font-family: $bodyFont;
         text-transform: uppercase;
-        color: $bodyCopy;
+        color: rgb(255, 255, 255);
         font-weight: 500;
         z-index: 999999999999;
         letter-spacing: -1px;
 
         &:visited {
-          color: $bodyCopy !important;
+          color: white !important;
         }
 
         @media (max-width: 800px) {
@@ -194,6 +199,9 @@ p {
   justify-content: center;
   width: 100%;
   height: 90%;
+  @media (max-width: 1200px) {
+    align-items: center;
+  }
 
   .half {
     padding: 0px 30px;
@@ -206,9 +214,10 @@ p {
     @media (max-width: 1200px) {
       height: auto;
       max-width: none;
-      width: 90% !important;
+      width: 50% !important;
     }
   }
+
   img {
     width: 100%;
     height: 100%;
@@ -245,7 +254,7 @@ p {
     // text-transform: uppercase;
 
     @media (max-width: 1200px) {
-      max-width: 90%;
+      max-width: 70%;
       height: auto;
     }
 
@@ -260,23 +269,6 @@ p {
   }
 }
 
-.whatIDoPage {
-  height: 100dvh;
-  width: 100dvw;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  background-color: rgb(35, 35, 35);
-  display: none;
-  opacity: 0;
-  z-index: 9;
-}
-
-.scrollable {
-  width: 90dvw;
-  height: 95dvh;
-  overflow: scroll;
-}
 .clock {
   display: flex;
   gap: 5px;
@@ -286,10 +278,163 @@ p {
   color: $bodyCopy;
   font-weight: 100;
 
+  #clock {
+    color: orangered;
+    font-size: 12px;
+  }
+
   p {
     letter-spacing: -0.5px;
-    font-size: 16px;
+    font-size: 12px;
     margin-top: 2px;
     font-weight: 900;
+    color: white;
+  }
+}
+
+.whatIDoPage {
+  height: 100dvh;
+  width: 100dvw;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background: #e3e3e3;
+  background: linear-gradient(221deg, rgba(227, 227, 227, 1) 50%, rgb(124, 124, 124) 100%);
+  display: none;
+  opacity: 0;
+  z-index: 9;
+
+  .container {
+    max-width: 1500px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+
+    .jobsWrapper {
+      // border: 1px solid;
+      height: 50dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      width: 25%;
+
+      .job {
+        // text-transform: uppercase;
+        letter-spacing: -1px;
+        font-family: "Helvetica", sans-serif;
+        font-family: $darkBodyCopy;
+        font-size: 30px;
+        font-weight: 100;
+        transition: 300ms ease;
+
+        &:hover {
+          color: orangered;
+        }
+      }
+    }
+
+    .jobPreview {
+      aspect-ratio: 16/9;
+      height: 50dvh;
+      border: 1px solid;
+    }
+  }
+
+  .wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    gap: 20px;
+
+    .divider {
+      height: 50vh;
+      display: block;
+      width: 0.5px;
+      background-color: black;
+    }
+
+    .contentWrapper {
+      max-width: 25%;
+
+      .itemCopyWrapper {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-direction: column;
+        padding: 0px 20px;
+        height: 50dvh;
+        color: darkBodyCopy !important;
+
+        .itemCopyTop {
+          text-align: left;
+
+          h1 {
+            font-family: "Akira Expanded", sans-serif;
+            color: orangered;
+            letter-spacing: -1px;
+          }
+
+          p {
+            font-family: "Helvetica", sans-serif;
+            font-size: 14px;
+            color: $darkBodyCopy !important;
+          }
+        }
+
+        .itemCopyBottom {
+          text-align: right;
+
+          p {
+            font-family: "Helvetica", sans-serif;
+            font-size: 14px;
+            color: $darkBodyCopy !important;
+          }
+        }
+      }
+    }
+    .itemShowcase {
+      height: 50dvh;
+      aspect-ratio: 16/9;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+}
+
+.loader {
+  width: 100dvw;
+  height: 100dvh;
+  background-color: rgb(35, 35, 35);
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 999999;
+  will-change: opacity;
+
+  .progressBar {
+    background-color: orangered;
+    height: 100px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    transition: width 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 20px;
+
+    h1 {
+      font-family: "Akira Expanded";
+      color: white;
+    }
   }
 }

@@ -31,7 +31,7 @@ function Home() {
     const isMobile = window.innerWidth < 1000;
     const camera = new THREE.PerspectiveCamera(isMobile ? 30 : 15, sizes.width / sizes.height, 0.1, 100);
 
-    camera.position.set(0, 0, 18);
+    camera.position.set(0, 0, 15);
     // camera.position.set(0, 0, 92);
     scene.add(camera);
 

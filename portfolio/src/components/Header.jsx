@@ -87,7 +87,7 @@ function Header() {
     if (!whatIDoPage.classList.contains("active")) {
       whatIDoPage.classList.add("active");
       openTl.to(whatIDoPage, {
-        display: "block",
+        display: "flex",
       });
 
       openTl.to(

@@ -297,6 +297,7 @@ p {
   gap: 20px;
 }
 .whatIDoPage .container .jobsWrapper {
+  width: 250px;
   height: 50dvh;
   display: flex;
   flex-direction: column;
@@ -318,10 +319,43 @@ p {
 .whatIDoPage .container .jobsWrapper .smallText {
   font-size: 16px;
 }
+.whatIDoPage .container .itemCopyWrapper {
+  min-width: 250px;
+  opacity: 0;
+  display: none;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-direction: column;
+  max-width: 15%;
+  height: 50dvh;
+  color: darkBodyCopy !important;
+}
+.whatIDoPage .container .itemCopyWrapper .itemCopyTop {
+  text-align: left;
+}
+.whatIDoPage .container .itemCopyWrapper .itemCopyTop h1 {
+  font-family: "Akira Expanded", sans-serif;
+  color: orangered;
+  letter-spacing: -1px;
+}
+.whatIDoPage .container .itemCopyWrapper .itemCopyTop p {
+  font-family: "Helvetica", sans-serif;
+  font-size: 14px;
+  color: rgb(35, 35, 35) !important;
+}
+.whatIDoPage .container .itemCopyWrapper .itemCopyBottom {
+  text-align: right;
+}
+.whatIDoPage .container .itemCopyWrapper .itemCopyBottom p {
+  font-family: "Helvetica", sans-serif;
+  font-size: 14px;
+  color: rgb(35, 35, 35) !important;
+}
 .whatIDoPage .container .jobPreview {
   aspect-ratio: 16/9;
   height: 50dvh;
   object-fit: cover;
+  transition: 0.3s ease;
 }
 .whatIDoPage .container .jobPreview img {
   max-width: 100%;
@@ -337,36 +371,6 @@ p {
 }
 .whatIDoPage .wrapper .contentWrapper {
   max-width: 25%;
-}
-.whatIDoPage .wrapper .contentWrapper .itemCopyWrapper {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  flex-direction: column;
-  padding: 0px 20px;
-  height: 50dvh;
-  color: darkBodyCopy !important;
-}
-.whatIDoPage .wrapper .contentWrapper .itemCopyWrapper .itemCopyTop {
-  text-align: left;
-}
-.whatIDoPage .wrapper .contentWrapper .itemCopyWrapper .itemCopyTop h1 {
-  font-family: "Akira Expanded", sans-serif;
-  color: orangered;
-  letter-spacing: -1px;
-}
-.whatIDoPage .wrapper .contentWrapper .itemCopyWrapper .itemCopyTop p {
-  font-family: "Helvetica", sans-serif;
-  font-size: 14px;
-  color: rgb(35, 35, 35) !important;
-}
-.whatIDoPage .wrapper .contentWrapper .itemCopyWrapper .itemCopyBottom {
-  text-align: right;
-}
-.whatIDoPage .wrapper .contentWrapper .itemCopyWrapper .itemCopyBottom p {
-  font-family: "Helvetica", sans-serif;
-  font-size: 14px;
-  color: rgb(35, 35, 35) !important;
 }
 .whatIDoPage .wrapper .itemShowcase {
   height: 50dvh;

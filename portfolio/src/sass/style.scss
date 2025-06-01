@@ -324,6 +324,7 @@ p {
 
     .jobsWrapper {
       // border: 1px solid;
+      width: 250px;
       height: 50dvh;
       display: flex;
       flex-direction: column;
@@ -349,11 +350,50 @@ p {
       }
     }
 
+    .itemCopyWrapper {
+      min-width: 250px;
+      opacity: 0;
+      display: none;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-direction: column;
+      max-width: 15%;
+      height: 50dvh;
+      color: darkBodyCopy !important;
+
+      .itemCopyTop {
+        text-align: left;
+
+        h1 {
+          font-family: "Akira Expanded", sans-serif;
+          color: orangered;
+          letter-spacing: -1px;
+        }
+
+        p {
+          font-family: "Helvetica", sans-serif;
+          font-size: 14px;
+          color: $darkBodyCopy !important;
+        }
+      }
+
+      .itemCopyBottom {
+        text-align: right;
+
+        p {
+          font-family: "Helvetica", sans-serif;
+          font-size: 14px;
+          color: $darkBodyCopy !important;
+        }
+      }
+    }
+
     .jobPreview {
       aspect-ratio: 16/9;
       height: 50dvh;
       // border: 1px solid;
       object-fit: cover;
+      transition: 0.3s ease;
       img {
         max-width: 100%;
         max-height: 100%;
@@ -371,42 +411,6 @@ p {
 
     .contentWrapper {
       max-width: 25%;
-
-      .itemCopyWrapper {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        flex-direction: column;
-        padding: 0px 20px;
-        height: 50dvh;
-        color: darkBodyCopy !important;
-
-        .itemCopyTop {
-          text-align: left;
-
-          h1 {
-            font-family: "Akira Expanded", sans-serif;
-            color: orangered;
-            letter-spacing: -1px;
-          }
-
-          p {
-            font-family: "Helvetica", sans-serif;
-            font-size: 14px;
-            color: $darkBodyCopy !important;
-          }
-        }
-
-        .itemCopyBottom {
-          text-align: right;
-
-          p {
-            font-family: "Helvetica", sans-serif;
-            font-size: 14px;
-            color: $darkBodyCopy !important;
-          }
-        }
-      }
     }
     .itemShowcase {
       height: 50dvh;

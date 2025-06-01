@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import gsap from "gsap";
 
 function WhatIDoPage() {
-  const [currentHover, setCurrentHover] = useState();
+  const [current, setCurrent] = useState();
+  const [prevHovered, setPrevHovered] = useState("Songworks");
 
   const jobs = [
     {
@@ -41,28 +42,82 @@ function WhatIDoPage() {
   const handleJobHover = (e) => {
     const chosen = e.target.innerHTML;
     const hoveredJob = jobs.find((job) => job.jobName === chosen);
-
     const jobPreviewImage = document.querySelector(".jobPreview img");
+    setPrevHovered(hoveredJob);
 
     if (hoveredJob && hoveredJob.jobImage) {
-      const tl = gsap.timeline();
-      tl.to(jobPreviewImage, { autoAlpha: 0, duration: 0.3 });
-      tl.set(jobPreviewImage, { attr: { src: hoveredJob.jobImage } });
-      tl.to(jobPreviewImage, { autoAlpha: 1, duration: 0.5 });
+      if (prevHovered.jobName === chosen) {
+        return;
+      } else {
+        const tl = gsap.timeline();
+        tl.to(jobPreviewImage, { autoAlpha: 0, duration: 0.5, ease: "power1.inOut" });
+        tl.set(jobPreviewImage, { attr: { src: hoveredJob.jobImage } });
+        tl.to(jobPreviewImage, { autoAlpha: 1, duration: 0.5, ease: "power1.inOut" });
+      }
     }
   };
 
   const handleClick = (job) => {
-    setCurrentHover(job);
+    setCurrent(job);
+  };
+
+  useEffect(() => {
+    if (current) {
+      const jobsWrapper = document.querySelector(".jobsWrapper");
+      const jobCopyWrapper = document.querySelector(".itemCopyWrapper");
+
+      const tl = gsap.timeline();
+
+      tl.to(jobsWrapper, {
+        autoAlpha: 0,
+        duration: 0.4,
+        ease: "power1.inOut",
+      });
+
+      tl.to(jobsWrapper, {
+        display: "none",
+      });
+
+      tl.to(jobCopyWrapper, {
+        display: "flex",
+      });
+
+      tl.to(jobCopyWrapper, {
+        autoAlpha: 1,
+        duration: 0.4,
+        ease: "power1.inOut",
+      });
+    }
+  }, [current]);
+
+  const back = () => {
     const jobsWrapper = document.querySelector(".jobsWrapper");
     const jobCopyWrapper = document.querySelector(".itemCopyWrapper");
 
-    // LOGIC FOR HIDING AND SHOWING COPY PLS
+    const tl = gsap.timeline();
+    tl.to(jobCopyWrapper, {
+      autoAlpha: 0,
+      duration: 0.4,
+    });
+
+    tl.to(jobCopyWrapper, {
+      display: "none",
+    });
+    tl.to(
+      jobsWrapper,
+      {
+        display: "flex",
+      },
+      "-=1"
+    );
+
+    tl.to(jobsWrapper, {
+      autoAlpha: 1,
+      duration: 0.4,
+    });
   };
 
-  const back = () => {
-    console.log("BACK PLEASEEEEEE");
-  };
+  // LOGIC FOR HIDING AND SHOWING COPY PLS
 
   return (
     <section className="whatIDoPage">
@@ -81,31 +136,31 @@ function WhatIDoPage() {
             </span>
           ))}
         </div>
+        {current && (
+          <div className="itemCopyWrapper">
+            <div className="itemCopyTop">
+              <span onClick={back}>back</span>
+              <h1>{current.jobName}</h1>
+              <p>{current.jobCopy}</p>
+            </div>
+            <div className="itemCopyBottom">
+              <p>
+                YEAR: {current.jobYear}
+                <br />
+                <br />
+                {current.jobSkills}
+                <br />
+                <br />
+                {current.jobLink}
+              </p>
+            </div>
+          </div>
+        )}
         <span className="divider"></span>
         <div className="jobPreview">
           <img className="previewImage" src="./src/static/jobs/songworks.jpg" alt="imagePreview" />
         </div>
       </div>
-      {currentHover && currentHover.jobCopy && (
-        <div className="itemCopyWrapper">
-          <span onClick={back}>back</span>
-          <div className="itemCopyTop">
-            <h1>{currentHover.jobName}</h1>
-            <p>{currentHover.jobCopy}</p>
-          </div>
-          <div className="itemCopyBottom">
-            <p>
-              YEAR: {currentHover.jobYear}
-              <br />
-              <br />
-              {currentHover.jobSkills}
-              <br />
-              <br />
-              {currentHover.jobLink}
-            </p>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

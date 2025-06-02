@@ -31,30 +31,26 @@ function Home() {
     const isMobile = window.innerWidth < 1000;
     const camera = new THREE.PerspectiveCamera(isMobile ? 30 : 15, sizes.width / sizes.height, 0.1, 100);
 
-    camera.position.set(0, 0, 15);
+    camera.position.set(0, 0, 12);
     // camera.position.set(0, 0, 92);
     scene.add(camera);
 
     const loadingManager = new THREE.LoadingManager();
     const progressBar = document.querySelector(".progressBar");
-    const progressBarPercent = document.querySelector(".progressBar h1");
+    const progressBarPercent = document.querySelector(".percentageLoaded");
 
     // Runs on completion of all texture load
     loadingManager.onLoad = () => {
       const tl = gsap.timeline();
-      gsap.to(progressBarPercent, {
-        opacity: 0,
-        duration: 0.5,
-      });
 
       tl.to(progressBar, {
         height: "100dvh",
         duration: 1,
-        delay: 0.4,
+        delay: 1,
       });
 
       tl.to(loaderRef.current, {
-        duration: 0.5,
+        duration: 1,
         autoAlpha: 0,
         ease: "power2.inOut",
         onComplete: () => {
@@ -65,10 +61,19 @@ function Home() {
 
     loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
       const percentage = (itemsLoaded / itemsTotal) * 100;
-      progressBar.style.width = `${percentage}%`;
-      progressBarPercent.innerHTML = `${percentage.toFixed(1)}%`;
-    };
 
+      gsap.to(progressBar, {
+        width: `${percentage}%`,
+        duration: 0.3,
+        ease: "power1.out",
+      });
+
+      gsap.to(progressBarPercent, {
+        innerHTML: `${percentage.toFixed(1)}%`,
+        duration: 0.3,
+        snap: "innerHTML",
+      });
+    };
     /*
      * Textures
      */
@@ -124,7 +129,6 @@ function Home() {
       normalMap: metalNormalTexture,
     });
 
-    // Concrete Look Texture
     const concreteColorTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_Color.jpg");
     const concreteRoughnessTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_Roughness.jpg");
     const concreteAOTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_AmbientOcclusion.jpg");
@@ -221,6 +225,8 @@ function Home() {
     const planeGeometry = new THREE.PlaneGeometry(30, 30, 20, 20);
     const planeMaterial = new THREE.MeshStandardMaterial({
       color: "#000",
+      // map: concreteColorTexture,
+      // roughness: 0.5,
       roughnessMap: concreteRoughnessTexture,
       metalnessMap: concreteMetalnessTexture,
 
@@ -405,8 +411,8 @@ function Home() {
     window.addEventListener("touchmove", (e) => {
       if (e.touches.length === 1) {
         const touch = e.touches[0];
-        const relativeX = (touch.clientX / window.innerWidth - 0.5) * 2;
-        const relativeY = (touch.clientY / window.innerHeight - 0.5) * 2;
+        const relativeX = (touch.clientX / window.innerWidth - 0.5) * 4;
+        const relativeY = (touch.clientY / window.innerHeight - 0.5) * 4;
 
         targetX = cameraFocus.x + relativeX * 3.45;
         targetY = cameraFocus.y - relativeY * 3.45;

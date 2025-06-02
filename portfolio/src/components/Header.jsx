@@ -6,18 +6,22 @@ import LiveClock from "./LiveClock";
 function Header() {
   const handleHover = (e) => {
     const links = e.currentTarget.querySelectorAll(".link");
-    gsap.to(links, {
-      y: "-23px",
-      duration: 0.2,
-    });
+    if (window.innerWidth > 800) {
+      gsap.to(links, {
+        y: "-23px",
+        duration: 0.2,
+      });
+    }
   };
 
   const handleLeave = (e) => {
     const links = e.currentTarget.querySelectorAll(".link");
-    gsap.to(links, {
-      y: "0",
-      duration: 0.2,
-    });
+    if (window.innerWidth > 800) {
+      gsap.to(links, {
+        y: "0",
+        duration: 0.2,
+      });
+    }
   };
 
   const toggleMenu = () => {
@@ -42,6 +46,10 @@ function Header() {
         autoAlpha: 0,
         duration: 0.4,
       });
+
+      closeTl.to(headerWrapper, {
+        display: "none",
+      });
     } else if (!headerWrapper.classList.contains("active")) {
       const openTl = gsap.timeline();
       headerWrapper.classList.add("active");
@@ -53,6 +61,10 @@ function Header() {
       gsap.to(hamTwo, {
         rotate: -45,
       });
+
+      openTl.to(headerWrapper, {
+        display: "flex",
+      });
       openTl.fromTo(
         headerWrapper,
         { height: "0px" },
@@ -61,7 +73,8 @@ function Header() {
           opacity: 1,
           height: "400px",
           duration: 0.7,
-        }
+        },
+        "-=0.4"
       );
 
       headerLinks.forEach((item) => {
@@ -71,7 +84,7 @@ function Header() {
           {
             opacity: 1,
             y: 0,
-            duration: 0.25,
+            duration: 0.08,
             ease: "power2.out",
           }
         );
@@ -141,9 +154,9 @@ function Header() {
         </div>
 
         <div className="whatLink">
-          <Link className=" whatido linkWrapper headerItem" to="/whatido" onMouseOver={handleHover} onMouseOut={handleLeave} onClick={togglePage}>
-            <span className="link">what i do</span>
-            <span className="link bottomLink">what i do</span>
+          <Link className=" whatido linkWrapper headerItem" onMouseOver={handleHover} onMouseOut={handleLeave} onClick={togglePage}>
+            <span className="link">selected work</span>
+            <span className="link bottomLink">selected work</span>
           </Link>
         </div>
 

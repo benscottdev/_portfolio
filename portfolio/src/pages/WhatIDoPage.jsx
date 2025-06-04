@@ -42,9 +42,9 @@ function WhatIDoPage() {
 
     if (hoveredJob && hoveredJob.jobImage) {
       const tl = gsap.timeline();
-      tl.to([jobPreviewImage, jobPreviewImageMobile], { autoAlpha: 0, duration: 0.4, ease: "power1.inOut" });
+      tl.to([jobPreviewImage, jobPreviewImageMobile], { autoAlpha: 0, duration: 0.2, ease: "power1.inOut" });
       tl.set([jobPreviewImage, jobPreviewImageMobile], { attr: { src: hoveredJob.jobImage } });
-      tl.to([jobPreviewImage, jobPreviewImageMobile], { delay: 0.2, autoAlpha: 1, duration: 0.5, ease: "power1.inOut" });
+      tl.to([jobPreviewImage, jobPreviewImageMobile], { delay: 0.2, autoAlpha: 1, duration: 0.3, ease: "power1.inOut" });
 
       jobYear.innerHTML = hoveredJob.jobYear;
       jobType.innerHTML = hoveredJob.jobType;

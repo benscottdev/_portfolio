@@ -2,19 +2,16 @@ import React from "react";
 import { gsap } from "gsap";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { CSS3DRenderer, CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import typeFace from "../static/fonts/Akira.typeface.json";
-import WhoAmI from "../components/WhoIAm";
-import TalkToMe from "../components/TalkToMe";
 import WhatIDoPage from "../pages/WhatIDoPage";
 import Loader from "../components/Loader";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 function Home() {
   const canvasRef = useRef();
-  const whoAmIRef = useRef();
-  const talkToMeRef = useRef();
   const containerRef = useRef();
   const loaderRef = useRef();
   const [loading, setLoading] = useState(true);
@@ -29,10 +26,9 @@ function Home() {
     };
 
     const isMobile = window.innerWidth < 1000;
-    const camera = new THREE.PerspectiveCamera(isMobile ? 30 : 15, sizes.width / sizes.height, 0.1, 100);
-
-    camera.position.set(0, 0, 12);
-    // camera.position.set(0, 0, 92);
+    const camera = new THREE.PerspectiveCamera(50, sizes.width / sizes.height, 0.001, 1000);
+    camera.updateProjectionMatrix();
+    camera.position.set(0.05, -0.1, 8);
     scene.add(camera);
 
     const loadingManager = new THREE.LoadingManager();
@@ -129,46 +125,47 @@ function Home() {
       normalMap: metalNormalTexture,
     });
 
-    const concreteColorTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_Color.jpg");
-    const concreteRoughnessTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_Roughness.jpg");
-    const concreteAOTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_AmbientOcclusion.jpg");
-    const concreteMetalnessTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_Metalness.jpg");
-    const concreteDisplacementTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_Displacement.jpg");
-    const concreteNormalTexture = textureLoader.load("/textures/Concrete044C_2K-JPG/Concrete044C_2K-JPG_NormalGL.jpg");
+    // METAL SCI FI
+    const hangarMetalColorTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_albedo.jpg");
+    const hangarMetalRoughnessTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_roughness.jpg");
+    const hangarMetalAOTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_ao.jpg");
+    const hangarMetalMetalnessTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_metallic.jpg");
+    const hangarMetalDisplacementTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_height.jpg");
+    const hangarMetalNormalTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_normal.jpg");
 
-    concreteColorTexture.colorSpace = THREE.SRGBColorSpace;
+    hangarMetalColorTexture.colorSpace = THREE.SRGBColorSpace;
 
-    const repeatCount = 5.3;
+    const repeatCount2 = 2;
 
-    concreteColorTexture.repeat.x = repeatCount;
-    concreteColorTexture.repeat.y = repeatCount;
-    concreteColorTexture.wrapS = THREE.RepeatWrapping;
-    concreteColorTexture.wrapT = THREE.RepeatWrapping;
+    hangarMetalColorTexture.repeat.x = repeatCount2;
+    hangarMetalColorTexture.repeat.y = repeatCount2;
+    hangarMetalColorTexture.wrapS = THREE.RepeatWrapping;
+    hangarMetalColorTexture.wrapT = THREE.RepeatWrapping;
 
-    concreteRoughnessTexture.repeat.x = repeatCount;
-    concreteRoughnessTexture.repeat.y = repeatCount;
-    concreteRoughnessTexture.wrapS = THREE.RepeatWrapping;
-    concreteRoughnessTexture.wrapT = THREE.RepeatWrapping;
+    hangarMetalRoughnessTexture.repeat.x = repeatCount2;
+    hangarMetalRoughnessTexture.repeat.y = repeatCount2;
+    hangarMetalRoughnessTexture.wrapS = THREE.RepeatWrapping;
+    hangarMetalRoughnessTexture.wrapT = THREE.RepeatWrapping;
 
-    concreteAOTexture.repeat.x = repeatCount;
-    concreteAOTexture.repeat.y = repeatCount;
-    concreteAOTexture.wrapS = THREE.RepeatWrapping;
-    concreteAOTexture.wrapT = THREE.RepeatWrapping;
+    hangarMetalAOTexture.repeat.x = repeatCount2;
+    hangarMetalAOTexture.repeat.y = repeatCount2;
+    hangarMetalAOTexture.wrapS = THREE.RepeatWrapping;
+    hangarMetalAOTexture.wrapT = THREE.RepeatWrapping;
 
-    concreteMetalnessTexture.repeat.x = repeatCount;
-    concreteMetalnessTexture.repeat.y = repeatCount;
-    concreteMetalnessTexture.wrapS = THREE.RepeatWrapping;
-    concreteMetalnessTexture.wrapT = THREE.RepeatWrapping;
+    hangarMetalMetalnessTexture.repeat.x = repeatCount2;
+    hangarMetalMetalnessTexture.repeat.y = repeatCount2;
+    hangarMetalMetalnessTexture.wrapS = THREE.RepeatWrapping;
+    hangarMetalMetalnessTexture.wrapT = THREE.RepeatWrapping;
 
-    concreteDisplacementTexture.repeat.x = repeatCount;
-    concreteDisplacementTexture.repeat.y = repeatCount;
-    concreteDisplacementTexture.wrapS = THREE.RepeatWrapping;
-    concreteDisplacementTexture.wrapT = THREE.RepeatWrapping;
+    hangarMetalDisplacementTexture.repeat.x = repeatCount2;
+    hangarMetalDisplacementTexture.repeat.y = repeatCount2;
+    hangarMetalDisplacementTexture.wrapS = THREE.RepeatWrapping;
+    hangarMetalDisplacementTexture.wrapT = THREE.RepeatWrapping;
 
-    concreteNormalTexture.repeat.x = repeatCount;
-    concreteNormalTexture.repeat.y = repeatCount;
-    concreteNormalTexture.wrapS = THREE.RepeatWrapping;
-    concreteNormalTexture.wrapT = THREE.RepeatWrapping;
+    hangarMetalNormalTexture.repeat.x = repeatCount2;
+    hangarMetalNormalTexture.repeat.y = repeatCount2;
+    hangarMetalNormalTexture.wrapS = THREE.RepeatWrapping;
+    hangarMetalNormalTexture.wrapT = THREE.RepeatWrapping;
 
     // Fonts
     const fontLoader = new FontLoader();
@@ -177,7 +174,7 @@ function Home() {
 
     const textGeometry = new TextGeometry(textContent, {
       font,
-      size: window.innerWidth < 1500 ? 0.25 : 0.3,
+      size: 0.2,
       depth: 0.1,
       curveSegments: 12,
       bevelSegments: 4,
@@ -189,11 +186,12 @@ function Home() {
     textGeometry.setAttribute("uv2", new THREE.BufferAttribute(textGeometry.attributes.uv.array, 2));
 
     const text = new THREE.Mesh(textGeometry, metalTexture);
+    text.position.set(-0.3, 0, 4);
     text.castShadow = true;
     text.receiveShadow = true;
     textGeometry.computeBoundingBox();
     textGeometry.computeVertexNormals();
-    scene.add(text);
+    // scene.add(text);
 
     const subText = new TextGeometry("web developer", {
       font,
@@ -221,28 +219,160 @@ function Home() {
      * Geometries
      */
 
-    // Plane Geometry
-    const planeGeometry = new THREE.PlaneGeometry(30, 30, 20, 20);
-    const planeMaterial = new THREE.MeshStandardMaterial({
-      color: "#000",
-      // map: concreteColorTexture,
-      // roughness: 0.5,
-      roughnessMap: concreteRoughnessTexture,
-      metalnessMap: concreteMetalnessTexture,
+    // ROOM
 
-      aoMap: concreteAOTexture,
-      normalMap: concreteNormalTexture,
-      displacementMap: concreteDisplacementTexture,
-      displacementScale: 0.63,
+    const gltfLoader = new GLTFLoader();
+
+    gltfLoader.load("../src/static/SpaceShip11.glb", (gltf) => {
+      const roomModel = gltf.scene;
+      scene.add(roomModel);
+      // roomModel.rotation.set(0, -1.55, 0);
+
+      roomModel.traverse((child) => {
+        if (child.isMesh) {
+          // Clone material if shared among objects
+          child.material = child.material.clone();
+          child.material.side = THREE.DoubleSide;
+
+          // Apply maps
+          child.material.map = hangarMetalColorTexture;
+          child.material.normalMap = hangarMetalNormalTexture;
+          child.material.roughnessMap = hangarMetalRoughnessTexture;
+          child.material.metalnessMap = hangarMetalMetalnessTexture;
+          // child.material.roughness = 0.1;
+          // child.material.metalness = 0.9;
+          const repeat = 1;
+
+          child.material.map.wrapS = THREE.RepeatWrapping;
+          child.material.map.wrapT = THREE.RepeatWrapping;
+          child.material.map.repeat.set(repeat, repeat);
+
+          child.material.normalMap.wrapS = THREE.RepeatWrapping;
+          child.material.normalMap.wrapT = THREE.RepeatWrapping;
+          child.material.normalMap.repeat.set(repeat, repeat);
+
+          child.material.roughnessMap.wrapS = THREE.RepeatWrapping;
+          child.material.roughnessMap.wrapT = THREE.RepeatWrapping;
+          child.material.roughnessMap.repeat.set(repeat, repeat);
+
+          child.material.metalnessMap.wrapS = THREE.RepeatWrapping;
+          child.material.metalnessMap.wrapT = THREE.RepeatWrapping;
+          child.material.metalnessMap.repeat.set(repeat, repeat);
+
+          child.material.transparent = false;
+          child.material.depthWrite = true;
+          child.material.depthTest = true;
+          // Make sure the material updates
+          child.material.needsUpdate = true;
+        }
+      });
     });
 
-    const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-    planeMesh.position.z = -0.45;
-    planeMesh.position.x = 0.75;
-    planeMesh.position.y = 2.8;
-    planeMesh.receiveShadow = true;
-    planeMesh.castShadow = true;
-    scene.add(planeMesh);
+    // Monitor
+    gltfLoader.load("../src/static/SpaceShipScreen1.glb", (gltf) => {
+      const spaceShipMonitor = gltf.scene;
+      scene.add(spaceShipMonitor);
+    });
+
+    // Bollards
+    gltfLoader.load("../src/static/SpaceShipBollards1.glb", (gltf) => {
+      const spaceShipBollards = gltf.scene;
+      scene.add(spaceShipBollards);
+
+      spaceShipBollards.traverse((child) => {
+        if (child.isMesh) {
+          // Clone material if shared among objects
+          child.material = child.material.clone();
+          child.material.side = THREE.DoubleSide;
+
+          // Apply maps
+          child.material.map = hangarMetalColorTexture;
+          child.material.normalMap = hangarMetalNormalTexture;
+          child.material.roughnessMap = hangarMetalRoughnessTexture;
+          child.material.metalnessMap = hangarMetalMetalnessTexture;
+          const repeat = 1;
+
+          child.material.map.wrapS = THREE.RepeatWrapping;
+          child.material.map.wrapT = THREE.RepeatWrapping;
+          child.material.map.repeat.set(repeat, repeat);
+
+          child.material.normalMap.wrapS = THREE.RepeatWrapping;
+          child.material.normalMap.wrapT = THREE.RepeatWrapping;
+          child.material.normalMap.repeat.set(repeat, repeat);
+
+          child.material.roughnessMap.wrapS = THREE.RepeatWrapping;
+          child.material.roughnessMap.wrapT = THREE.RepeatWrapping;
+          child.material.roughnessMap.repeat.set(repeat, repeat);
+
+          child.material.metalnessMap.wrapS = THREE.RepeatWrapping;
+          child.material.metalnessMap.wrapT = THREE.RepeatWrapping;
+          child.material.metalnessMap.repeat.set(repeat, repeat);
+
+          child.material.transparent = false;
+          child.material.depthWrite = true;
+          child.material.depthTest = true;
+          // Make sure the material updates
+          child.material.needsUpdate = true;
+        }
+      });
+    });
+
+    // BlastDoor
+    gltfLoader.load("../src/static/SpaceShipBlastDoor1.glb", (gltf) => {
+      const blastDoorModel = gltf.scene;
+      scene.add(blastDoorModel);
+
+      blastDoorModel.traverse((child) => {
+        if (child.isMesh) {
+          // Clone material if shared among objects
+          child.material = child.material.clone();
+          child.material.side = THREE.DoubleSide;
+
+          // Apply maps
+          child.material.map = hangarMetalColorTexture;
+          child.material.normalMap = hangarMetalNormalTexture;
+          child.material.roughnessMap = hangarMetalRoughnessTexture;
+          child.material.metalnessMap = hangarMetalMetalnessTexture;
+          const repeat = 1;
+
+          child.material.map.wrapS = THREE.RepeatWrapping;
+          child.material.map.wrapT = THREE.RepeatWrapping;
+          child.material.map.repeat.set(repeat, repeat);
+
+          child.material.normalMap.wrapS = THREE.RepeatWrapping;
+          child.material.normalMap.wrapT = THREE.RepeatWrapping;
+          child.material.normalMap.repeat.set(repeat, repeat);
+
+          child.material.roughnessMap.wrapS = THREE.RepeatWrapping;
+          child.material.roughnessMap.wrapT = THREE.RepeatWrapping;
+          child.material.roughnessMap.repeat.set(repeat, repeat);
+
+          child.material.metalnessMap.wrapS = THREE.RepeatWrapping;
+          child.material.metalnessMap.wrapT = THREE.RepeatWrapping;
+          child.material.metalnessMap.repeat.set(repeat, repeat);
+
+          child.material.transparent = false;
+          child.material.depthWrite = true;
+          child.material.depthTest = true;
+          // Make sure the material updates
+          child.material.needsUpdate = true;
+        }
+      });
+    });
+
+    // Emissive Lights
+    const lightMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1 });
+    const lightGeom = new THREE.BoxGeometry(0.4, 0.1, 2);
+    const lightOneMesh = new THREE.Mesh(lightGeom, lightMaterial);
+    const lightTwoMesh = new THREE.Mesh(lightGeom, lightMaterial);
+
+    lightOneMesh.position.set(0, 0.76, 3);
+    lightOneMesh.rotation.y = Math.PI * 0.5;
+    scene.add(lightOneMesh);
+
+    lightTwoMesh.position.set(0, 0.76, -3);
+    lightTwoMesh.rotation.y = Math.PI * 0.5;
+    scene.add(lightTwoMesh);
 
     /*
      * Scene Add-ons
@@ -250,33 +380,37 @@ function Home() {
 
     // Lights
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.2);
-    const dirLightHelp = new THREE.DirectionalLight(dirLight);
-    dirLight.decay = 2;
-    // scene.add(dirLightHelp);
-    dirLight.shadow.bias = 0.0000006;
-    dirLight.lookAt(0, 0, 0);
-    dirLight.position.set(1, 1, 1);
-    // dirLight.castShadow = true;
+    const pointLight = new THREE.PointLight(0xffffff, 2, 100);
+    const pointLightHelper = new THREE.PointLightHelper(pointLight);
+    pointLight.position.set(-0, 0.7, -3);
+    pointLight.castShadow = true;
+    // scene.add(pointLightHelper);
 
-    const dirLight2 = new THREE.DirectionalLight(0xffffff, 7);
-    const dirLightHelp2 = new THREE.DirectionalLightHelper(dirLight2);
-    // scene.add(dirLightHelp2);
-    dirLight2.shadow.bias = 0.0000006;
-    dirLight2.position.set(2, 10, 0.3);
-    dirLight2.castShadow = true;
+    const pointLight2 = new THREE.PointLight(0xffffff, 1, 100);
+    const pointLightHelper2 = new THREE.PointLightHelper(pointLight2);
+    pointLight2.position.set(-0, 0.7, 3);
+    pointLight2.castShadow = true;
+    // scene.add(pointLightHelper2);
 
-    const dirLight3 = new THREE.DirectionalLight(0xffffff, 0.3);
-    const dirLightHelp3 = new THREE.DirectionalLightHelper(dirLight3);
-    // scene.add(dirLightHelp3);
+    const pointLight3 = new THREE.PointLight(0xffffff, 0.5, 100);
+    const pointLightHelper3 = new THREE.PointLightHelper(pointLight3);
+    pointLight3.position.set(-0, 0.5, 5);
+    pointLight3.castShadow = true;
+    // scene.add(pointLightHelper3);
 
-    dirLight3.position.set(0, -0.3, 3);
-    dirLight3.lookAt(0, 0, 0);
+    const redDirectionalLight = new THREE.DirectionalLight(0xff0000, 0.3);
+    redDirectionalLight.position.set(1.75, 0, 6);
+    // redDirectionalLight.target = pointLight2;
+    const redDirectionalLightHelper = new THREE.DirectionalLightHelper(redDirectionalLight);
+    // scene.add(redDirectionalLightHelper);
 
-    // const helper = new THREE.CameraHelper(dirLight.shadow.camera);
-    // scene.add(helper);
+    const ambi = new THREE.AmbientLight(0xffffff, 0);
 
-    scene.add(dirLight, dirLight2, dirLight3);
+    scene.add(ambi);
+    scene.add(pointLight);
+    scene.add(pointLight2);
+    scene.add(pointLight3);
+    // scene.add(redDirectionalLight);
 
     // Camera
     const cameraFocus = new THREE.Vector3();
@@ -291,23 +425,6 @@ function Home() {
     /*
      * Div Positioning
      */
-    let baseScale = window.innerWidth < 1200 ? 0.009 : 0.003;
-
-    // WhoAmI
-    const whoAmIElement = whoAmIRef.current;
-    const whoAmIObject = new CSS3DObject(whoAmIElement);
-    whoAmIObject.position.set(5, 9, 0);
-    whoAmIObject.scale.set(baseScale, baseScale, baseScale);
-
-    scene.add(whoAmIObject);
-
-    // TalkToMe
-    const TalkToMeElement = talkToMeRef.current;
-    const TalkToMeObject = new CSS3DObject(TalkToMeElement);
-    TalkToMeObject.position.set(-9, -2, 0);
-    TalkToMeObject.scale.set(baseScale, baseScale, baseScale);
-
-    scene.add(TalkToMeObject);
 
     // Home
     const homeBtn = document.querySelector(".home");
@@ -325,58 +442,6 @@ function Home() {
           x: text.position.x,
           y: text.position.y,
           z: text.position.z,
-          duration: 1,
-          ease: "power2.inOut",
-          onUpdate: () => {
-            cameraFocus.set(lookAtTarget.x, lookAtTarget.y, lookAtTarget.z);
-            targetX = lookAtTarget.x;
-            targetY = lookAtTarget.y;
-          },
-        });
-      });
-    }
-
-    // Who I Am
-    const whoIAmBtn = document.querySelector(".whoiam");
-    if (whoIAmBtn) {
-      whoIAmBtn.addEventListener("click", () => {
-        gsap.to(camera.position, {
-          x: whoAmIObject.position.x,
-          y: whoAmIObject.position.y,
-          duration: 1,
-          ease: "power2.inOut",
-        });
-
-        gsap.to(lookAtTarget, {
-          x: whoAmIObject.position.x,
-          y: whoAmIObject.position.y,
-          z: whoAmIObject.position.z,
-          duration: 1,
-          ease: "power2.inOut",
-          onUpdate: () => {
-            cameraFocus.set(lookAtTarget.x, lookAtTarget.y, lookAtTarget.z);
-            targetX = lookAtTarget.x;
-            targetY = lookAtTarget.y;
-          },
-        });
-      });
-    }
-
-    // Talk To Me
-    const talkToMeBtn = document.querySelector(".talktome");
-    if (talkToMeBtn) {
-      talkToMeBtn.addEventListener("click", () => {
-        gsap.to(camera.position, {
-          x: TalkToMeObject.position.x,
-          y: TalkToMeObject.position.y,
-          duration: 1,
-          ease: "power2.inOut",
-        });
-
-        gsap.to(lookAtTarget, {
-          x: TalkToMeObject.position.x,
-          y: TalkToMeObject.position.y,
-          z: TalkToMeObject.position.z,
           duration: 1,
           ease: "power2.inOut",
           onUpdate: () => {
@@ -420,21 +485,13 @@ function Home() {
     });
 
     // Renderers
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, precision: "highp" });
     renderer.setSize(sizes.width, sizes.height);
     const cappedPixelRatio = window.innerWidth > 2500 ? 1 : Math.min(window.devicePixelRatio, 2);
     renderer.setPixelRatio(cappedPixelRatio);
 
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
-
-    // CSS Renderer for DOM elements
-    const cssRenderer = new CSS3DRenderer();
-    cssRenderer.domElement.classList.add("css3d");
-    cssRenderer.setSize(sizes.width, sizes.height);
-    cssRenderer.domElement.style.position = "absolute";
-    cssRenderer.domElement.style.top = "0";
-    containerRef.current.appendChild(cssRenderer.domElement);
 
     // Resize
     const getCanvasSize = () => {
@@ -444,6 +501,8 @@ function Home() {
         height: bounds.height,
       };
     };
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
 
     sizes = getCanvasSize();
 
@@ -455,27 +514,32 @@ function Home() {
       camera.updateProjectionMatrix();
 
       renderer.setSize(sizes.width, sizes.height);
-      cssRenderer.setSize(sizes.width, sizes.height);
     });
 
-    // window.addEventListener("resize", handleResize);
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.update();
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.zoomSpeed = 1.0;
 
     // Animation
     const tick = () => {
       const parallaxX = targetX;
       const parallaxY = targetY;
-      camera.position.x += (parallaxX - camera.position.x) * 0.05;
-      camera.position.y += (parallaxY - camera.position.y) * 0.05;
+      // camera.position.x += (parallaxX - camera.position.x) * 0.05;
+      // camera.position.y += (parallaxY - camera.position.y) * 0.05;
+      controls.update();
 
-      camera.lookAt(cameraFocus);
+      // camera.lookAt(cameraFocus);
       renderer.render(scene, camera);
-      cssRenderer.render(scene, camera);
       requestAnimationFrame(tick);
     };
+
     tick();
 
     return () => {
       // window.removeEventListener("resize", handleResize);
+
       renderer.dispose();
       textGeometry.dispose();
       scene.remove(text);
@@ -488,9 +552,6 @@ function Home() {
 
       <div ref={containerRef} style={{ position: "relative", width: "100%", height: "100%" }}>
         <canvas ref={canvasRef} className="webgl" />
-
-        <WhoAmI ref={whoAmIRef} />
-        <TalkToMe ref={talkToMeRef} />
         <WhatIDoPage />
       </div>
     </>

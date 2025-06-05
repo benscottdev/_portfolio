@@ -9,6 +9,7 @@ import WhatIDoPage from "../pages/WhatIDoPage";
 import Loader from "../components/Loader";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import GUI from "lil-gui";
 
 function Home() {
   const canvasRef = useRef();
@@ -16,9 +17,19 @@ function Home() {
   const loaderRef = useRef();
   const [loading, setLoading] = useState(true);
 
+  let scene;
+
+  function setRepeatWrapping(texture, repeatX, repeatY) {
+    texture.repeat.set(repeatX, repeatY);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+  }
+
   useEffect(() => {
+    const gui = new GUI();
+
     const canvas = canvasRef.current;
-    const scene = new THREE.Scene();
+    scene = new THREE.Scene();
 
     let sizes = {
       width: window.innerWidth,
@@ -85,37 +96,12 @@ function Home() {
 
     metalColorTexture.colorSpace = THREE.SRGBColorSpace;
 
-    const metalRepeatCount = 1;
-
-    metalColorTexture.repeat.x = metalRepeatCount;
-    metalColorTexture.repeat.y = metalRepeatCount;
-    metalColorTexture.wrapS = THREE.RepeatWrapping;
-    metalColorTexture.wrapT = THREE.RepeatWrapping;
-
-    metalAOTexture.repeat.x = metalRepeatCount;
-    metalAOTexture.repeat.y = metalRepeatCount;
-    metalAOTexture.wrapS = THREE.RepeatWrapping;
-    metalAOTexture.wrapT = THREE.RepeatWrapping;
-
-    metalRoughnessTexture.repeat.x = metalRepeatCount;
-    metalRoughnessTexture.repeat.y = metalRepeatCount;
-    metalRoughnessTexture.wrapS = THREE.RepeatWrapping;
-    metalRoughnessTexture.wrapT = THREE.RepeatWrapping;
-
-    metalMetallicTexture.repeat.x = metalRepeatCount;
-    metalMetallicTexture.repeat.y = metalRepeatCount;
-    metalMetallicTexture.wrapS = THREE.RepeatWrapping;
-    metalMetallicTexture.wrapT = THREE.RepeatWrapping;
-
-    metalDisplacementTexture.repeat.x = metalRepeatCount;
-    metalDisplacementTexture.repeat.y = metalRepeatCount;
-    metalDisplacementTexture.wrapS = THREE.RepeatWrapping;
-    metalDisplacementTexture.wrapT = THREE.RepeatWrapping;
-
-    metalNormalTexture.repeat.x = metalRepeatCount;
-    metalNormalTexture.repeat.y = metalRepeatCount;
-    metalNormalTexture.wrapS = THREE.RepeatWrapping;
-    metalNormalTexture.wrapT = THREE.RepeatWrapping;
+    setRepeatWrapping(metalColorTexture, 1, 1);
+    setRepeatWrapping(metalAOTexture, 1, 1);
+    setRepeatWrapping(metalRoughnessTexture, 1, 1);
+    setRepeatWrapping(metalMetallicTexture, 1, 1);
+    setRepeatWrapping(metalNormalTexture, 1, 1);
+    setRepeatWrapping(metalDisplacementTexture, 1, 1);
 
     const metalTexture = new THREE.MeshStandardMaterial({
       color: "grey",
@@ -130,42 +116,15 @@ function Home() {
     const hangarMetalRoughnessTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_roughness.jpg");
     const hangarMetalAOTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_ao.jpg");
     const hangarMetalMetalnessTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_metallic.jpg");
-    const hangarMetalDisplacementTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_height.jpg");
     const hangarMetalNormalTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_normal.jpg");
 
     hangarMetalColorTexture.colorSpace = THREE.SRGBColorSpace;
 
-    const repeatCount2 = 2;
-
-    hangarMetalColorTexture.repeat.x = repeatCount2;
-    hangarMetalColorTexture.repeat.y = repeatCount2;
-    hangarMetalColorTexture.wrapS = THREE.RepeatWrapping;
-    hangarMetalColorTexture.wrapT = THREE.RepeatWrapping;
-
-    hangarMetalRoughnessTexture.repeat.x = repeatCount2;
-    hangarMetalRoughnessTexture.repeat.y = repeatCount2;
-    hangarMetalRoughnessTexture.wrapS = THREE.RepeatWrapping;
-    hangarMetalRoughnessTexture.wrapT = THREE.RepeatWrapping;
-
-    hangarMetalAOTexture.repeat.x = repeatCount2;
-    hangarMetalAOTexture.repeat.y = repeatCount2;
-    hangarMetalAOTexture.wrapS = THREE.RepeatWrapping;
-    hangarMetalAOTexture.wrapT = THREE.RepeatWrapping;
-
-    hangarMetalMetalnessTexture.repeat.x = repeatCount2;
-    hangarMetalMetalnessTexture.repeat.y = repeatCount2;
-    hangarMetalMetalnessTexture.wrapS = THREE.RepeatWrapping;
-    hangarMetalMetalnessTexture.wrapT = THREE.RepeatWrapping;
-
-    hangarMetalDisplacementTexture.repeat.x = repeatCount2;
-    hangarMetalDisplacementTexture.repeat.y = repeatCount2;
-    hangarMetalDisplacementTexture.wrapS = THREE.RepeatWrapping;
-    hangarMetalDisplacementTexture.wrapT = THREE.RepeatWrapping;
-
-    hangarMetalNormalTexture.repeat.x = repeatCount2;
-    hangarMetalNormalTexture.repeat.y = repeatCount2;
-    hangarMetalNormalTexture.wrapS = THREE.RepeatWrapping;
-    hangarMetalNormalTexture.wrapT = THREE.RepeatWrapping;
+    setRepeatWrapping(hangarMetalColorTexture, 2, 2);
+    setRepeatWrapping(hangarMetalRoughnessTexture, 2, 2);
+    setRepeatWrapping(hangarMetalAOTexture, 2, 2);
+    setRepeatWrapping(hangarMetalMetalnessTexture, 2, 2);
+    setRepeatWrapping(hangarMetalNormalTexture, 2, 2);
 
     // Fonts
     const fontLoader = new FontLoader();
@@ -223,7 +182,7 @@ function Home() {
 
     const gltfLoader = new GLTFLoader();
 
-    gltfLoader.load("../src/static/SpaceShip11.glb", (gltf) => {
+    gltfLoader.load("../src/static/SpaceShip.glb", (gltf) => {
       const roomModel = gltf.scene;
       scene.add(roomModel);
       // roomModel.rotation.set(0, -1.55, 0);
@@ -232,36 +191,21 @@ function Home() {
         if (child.isMesh) {
           // Clone material if shared among objects
           child.material = child.material.clone();
-          child.material.side = THREE.DoubleSide;
 
           // Apply maps
           child.material.map = hangarMetalColorTexture;
           child.material.normalMap = hangarMetalNormalTexture;
           child.material.roughnessMap = hangarMetalRoughnessTexture;
           child.material.metalnessMap = hangarMetalMetalnessTexture;
-          // child.material.roughness = 0.1;
-          // child.material.metalness = 0.9;
-          const repeat = 1;
 
-          child.material.map.wrapS = THREE.RepeatWrapping;
-          child.material.map.wrapT = THREE.RepeatWrapping;
-          child.material.map.repeat.set(repeat, repeat);
+          const repeat = 4;
 
-          child.material.normalMap.wrapS = THREE.RepeatWrapping;
-          child.material.normalMap.wrapT = THREE.RepeatWrapping;
-          child.material.normalMap.repeat.set(repeat, repeat);
-
-          child.material.roughnessMap.wrapS = THREE.RepeatWrapping;
-          child.material.roughnessMap.wrapT = THREE.RepeatWrapping;
-          child.material.roughnessMap.repeat.set(repeat, repeat);
-
-          child.material.metalnessMap.wrapS = THREE.RepeatWrapping;
-          child.material.metalnessMap.wrapT = THREE.RepeatWrapping;
-          child.material.metalnessMap.repeat.set(repeat, repeat);
+          setRepeatWrapping(child.material.map, 4, 4);
+          setRepeatWrapping(child.material.normalMap, 4, 4);
+          setRepeatWrapping(child.material.roughnessMap, 4, 4);
+          setRepeatWrapping(child.material.metalnessMap, 4, 4);
 
           child.material.transparent = false;
-          child.material.depthWrite = true;
-          child.material.depthTest = true;
           // Make sure the material updates
           child.material.needsUpdate = true;
         }
@@ -269,13 +213,13 @@ function Home() {
     });
 
     // Monitor
-    gltfLoader.load("../src/static/SpaceShipScreen1.glb", (gltf) => {
+    gltfLoader.load("../src/static/SpaceShipScreen.glb", (gltf) => {
       const spaceShipMonitor = gltf.scene;
       scene.add(spaceShipMonitor);
     });
 
     // Bollards
-    gltfLoader.load("../src/static/SpaceShipBollards1.glb", (gltf) => {
+    gltfLoader.load("../src/static/SpaceShipBollards.glb", (gltf) => {
       const spaceShipBollards = gltf.scene;
       scene.add(spaceShipBollards);
 
@@ -290,27 +234,13 @@ function Home() {
           child.material.normalMap = hangarMetalNormalTexture;
           child.material.roughnessMap = hangarMetalRoughnessTexture;
           child.material.metalnessMap = hangarMetalMetalnessTexture;
-          const repeat = 1;
 
-          child.material.map.wrapS = THREE.RepeatWrapping;
-          child.material.map.wrapT = THREE.RepeatWrapping;
-          child.material.map.repeat.set(repeat, repeat);
-
-          child.material.normalMap.wrapS = THREE.RepeatWrapping;
-          child.material.normalMap.wrapT = THREE.RepeatWrapping;
-          child.material.normalMap.repeat.set(repeat, repeat);
-
-          child.material.roughnessMap.wrapS = THREE.RepeatWrapping;
-          child.material.roughnessMap.wrapT = THREE.RepeatWrapping;
-          child.material.roughnessMap.repeat.set(repeat, repeat);
-
-          child.material.metalnessMap.wrapS = THREE.RepeatWrapping;
-          child.material.metalnessMap.wrapT = THREE.RepeatWrapping;
-          child.material.metalnessMap.repeat.set(repeat, repeat);
-
+          setRepeatWrapping(child.material.map, 0.25, 0.25);
+          setRepeatWrapping(child.material.normalMap, 0.25, 0.25);
+          setRepeatWrapping(child.material.roughnessMap, 0.25, 0.25);
+          setRepeatWrapping(child.material.metalnessMap, 0.25, 0.25);
           child.material.transparent = false;
-          child.material.depthWrite = true;
-          child.material.depthTest = true;
+
           // Make sure the material updates
           child.material.needsUpdate = true;
         }
@@ -318,7 +248,7 @@ function Home() {
     });
 
     // BlastDoor
-    gltfLoader.load("../src/static/SpaceShipBlastDoor1.glb", (gltf) => {
+    gltfLoader.load("../src/static/SpaceShipBlastDoor.glb", (gltf) => {
       const blastDoorModel = gltf.scene;
       scene.add(blastDoorModel);
 
@@ -335,25 +265,14 @@ function Home() {
           child.material.metalnessMap = hangarMetalMetalnessTexture;
           const repeat = 1;
 
-          child.material.map.wrapS = THREE.RepeatWrapping;
-          child.material.map.wrapT = THREE.RepeatWrapping;
-          child.material.map.repeat.set(repeat, repeat);
+          setRepeatWrapping(child.material.map, 1, 1);
+          setRepeatWrapping(child.material.normalMap, 1, 1);
+          setRepeatWrapping(child.material.roughnessMap, 1, 1);
+          setRepeatWrapping(child.material.metalnessMap, 1, 1);
 
-          child.material.normalMap.wrapS = THREE.RepeatWrapping;
-          child.material.normalMap.wrapT = THREE.RepeatWrapping;
-          child.material.normalMap.repeat.set(repeat, repeat);
-
-          child.material.roughnessMap.wrapS = THREE.RepeatWrapping;
-          child.material.roughnessMap.wrapT = THREE.RepeatWrapping;
-          child.material.roughnessMap.repeat.set(repeat, repeat);
-
-          child.material.metalnessMap.wrapS = THREE.RepeatWrapping;
-          child.material.metalnessMap.wrapT = THREE.RepeatWrapping;
-          child.material.metalnessMap.repeat.set(repeat, repeat);
-
-          child.material.transparent = false;
-          child.material.depthWrite = true;
-          child.material.depthTest = true;
+          child.material.transparent = true;
+          // child.material.depthWrite = true;
+          // child.material.depthTest = true;
           // Make sure the material updates
           child.material.needsUpdate = true;
         }
@@ -378,39 +297,53 @@ function Home() {
      * Scene Add-ons
      */
 
+    // Fog
+    scene.fog = new THREE.FogExp2(0x262626, 0.1);
+
     // Lights
 
-    const pointLight = new THREE.PointLight(0xffffff, 2, 100);
+    const pointLight = new THREE.PointLight(0xffffff, 1.5, 100);
     const pointLightHelper = new THREE.PointLightHelper(pointLight);
     pointLight.position.set(-0, 0.7, -3);
-    pointLight.castShadow = true;
+    pointLight.castShadow = false;
     // scene.add(pointLightHelper);
 
-    const pointLight2 = new THREE.PointLight(0xffffff, 1, 100);
+    const pointLight2 = new THREE.PointLight(0xffffff, 0.75, 100);
     const pointLightHelper2 = new THREE.PointLightHelper(pointLight2);
     pointLight2.position.set(-0, 0.7, 3);
-    pointLight2.castShadow = true;
+    pointLight2.castShadow = false;
     // scene.add(pointLightHelper2);
 
-    const pointLight3 = new THREE.PointLight(0xffffff, 0.5, 100);
-    const pointLightHelper3 = new THREE.PointLightHelper(pointLight3);
-    pointLight3.position.set(-0, 0.5, 5);
-    pointLight3.castShadow = true;
-    // scene.add(pointLightHelper3);
+    const spotLight = new THREE.SpotLight(0xffffff, 18);
+    const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+    spotLight.position.set(0, 0.8, 0);
+    const spotLightTarget = new THREE.Object3D();
+    spotLight.castShadow = false;
+    spotLightTarget.position.set(0, -3, 0);
+    scene.add(spotLightTarget);
+    spotLight.target = spotLightTarget;
 
-    const redDirectionalLight = new THREE.DirectionalLight(0xff0000, 0.3);
-    redDirectionalLight.position.set(1.75, 0, 6);
-    // redDirectionalLight.target = pointLight2;
-    const redDirectionalLightHelper = new THREE.DirectionalLightHelper(redDirectionalLight);
-    // scene.add(redDirectionalLightHelper);
+    // scene.add(spotLightHelper);
+    spotLightHelper.update();
+    // spotLight.penumbra = 0.5;
+    spotLight.angle = Math.PI / 4;
+    spotLight.distance = 1;
 
-    const ambi = new THREE.AmbientLight(0xffffff, 0);
+    const ambi = new THREE.AmbientLight(0xffffff, 0.5);
 
-    scene.add(ambi);
+    scene.add(spotLight);
+    // scene.add(ambi);
     scene.add(pointLight);
     scene.add(pointLight2);
-    scene.add(pointLight3);
-    // scene.add(redDirectionalLight);
+
+    // LIGHTING GUI
+    gui.add(pointLight, "intensity", 0, 10).name("PointLight1_Intensity");
+    gui.add(pointLight2, "intensity", 0, 10).name("PointLight2_Intensity");
+    gui.add(spotLight, "distance", 0, 10).name("SpotLight_Intensity");
+
+    gui.add(pointLight.position, "z", -20, 20).name("PointLight1_ZPosition");
+    gui.add(pointLight2.position, "z", -20, 20).name("PointLight2_ZPosition");
+    gui.add(spotLight.position, "z", -20, 20).name("SpotLight_ZPosition");
 
     // Camera
     const cameraFocus = new THREE.Vector3();
@@ -549,7 +482,6 @@ function Home() {
   return (
     <>
       <Loader ref={loaderRef} />
-
       <div ref={containerRef} style={{ position: "relative", width: "100%", height: "100%" }}>
         <canvas ref={canvasRef} className="webgl" />
         <WhatIDoPage />

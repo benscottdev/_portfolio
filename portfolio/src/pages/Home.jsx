@@ -15,6 +15,8 @@ function Home() {
   const canvasRef = useRef();
   const containerRef = useRef();
   const loaderRef = useRef();
+  const progressRef = useRef();
+  const progressPercentRef = useRef();
   const [loading, setLoading] = useState(true);
 
   let scene;
@@ -23,6 +25,8 @@ function Home() {
     texture.repeat.set(repeatX, repeatY);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
   }
 
   useEffect(() => {
@@ -36,28 +40,33 @@ function Home() {
       height: window.innerHeight,
     };
 
-    const isMobile = window.innerWidth < 1000;
     const camera = new THREE.PerspectiveCamera(50, sizes.width / sizes.height, 0.001, 1000);
     camera.updateProjectionMatrix();
-    camera.position.set(0.05, -0.1, 8);
+    camera.position.set(0.05, 0.1, 8);
     scene.add(camera);
 
+    // Renderers
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setSize(sizes.width, sizes.height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio), 2);
+
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
+
     const loadingManager = new THREE.LoadingManager();
-    const progressBar = document.querySelector(".progressBar");
-    const progressBarPercent = document.querySelector(".percentageLoaded");
 
     // Runs on completion of all texture load
     loadingManager.onLoad = () => {
       const tl = gsap.timeline();
 
-      tl.to(progressBar, {
+      tl.to(progressRef.current, {
         height: "100dvh",
         duration: 1,
-        delay: 1,
+        delay: 0.3,
       });
 
       tl.to(loaderRef.current, {
-        duration: 1,
+        duration: 0.5,
         autoAlpha: 0,
         ease: "power2.inOut",
         onComplete: () => {
@@ -69,13 +78,13 @@ function Home() {
     loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
       const percentage = (itemsLoaded / itemsTotal) * 100;
 
-      gsap.to(progressBar, {
+      gsap.to(progressRef.current, {
         width: `${percentage}%`,
         duration: 0.3,
         ease: "power1.out",
       });
 
-      gsap.to(progressBarPercent, {
+      gsap.to(progressPercentRef.current, {
         innerHTML: `${percentage.toFixed(1)}%`,
         duration: 0.3,
         snap: "innerHTML",
@@ -86,45 +95,25 @@ function Home() {
      */
     const textureLoader = new THREE.TextureLoader(loadingManager);
 
-    // Metal Look Texture
-    const metalColorTexture = textureLoader.load("/textures/Metal003_2K-JPG/Metal003_2K-JPG_Color.jpg");
-    const metalAOTexture = textureLoader.load("/textures/Metal003_2K-JPG/worn_metal4_ao.png");
-    const metalRoughnessTexture = textureLoader.load("/textures/Metal003_2K-JPG/Metal003_2K-JPG_Roughness.jpg");
-    const metalMetallicTexture = textureLoader.load("/textures/Metal003_2K-JPG/Metal003_2K-JPG_Metalness.jpg");
-    const metalDisplacementTexture = textureLoader.load("/textures/Metal003_2K-JPG/Metal003_2K-JPG_Displacement.jpg");
-    const metalNormalTexture = textureLoader.load("/textures/Metal003_2K-JPG/Metal003_2K-JPG_NormalGL.jpg");
-
-    metalColorTexture.colorSpace = THREE.SRGBColorSpace;
-
-    setRepeatWrapping(metalColorTexture, 1, 1);
-    setRepeatWrapping(metalAOTexture, 1, 1);
-    setRepeatWrapping(metalRoughnessTexture, 1, 1);
-    setRepeatWrapping(metalMetallicTexture, 1, 1);
-    setRepeatWrapping(metalNormalTexture, 1, 1);
-    setRepeatWrapping(metalDisplacementTexture, 1, 1);
-
-    const metalTexture = new THREE.MeshStandardMaterial({
-      color: "grey",
-      map: metalColorTexture,
-      roughness: 0.2,
-      metalness: 0.9,
-      normalMap: metalNormalTexture,
+    // SciFi Panel
+    const hangarMetalColorTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_1K_albedo.jpg", (texture) => {
+      setRepeatWrapping(texture);
+    });
+    const hangarMetalRoughnessTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_1K_roughness.jpg", (texture) => {
+      setRepeatWrapping(texture, 4, 4);
+    });
+    const hangarMetalAOTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_1K_ao.jpg", (texture) => {
+      setRepeatWrapping(texture, 4, 4);
+    });
+    const hangarMetalMetalnessTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_1K_metallic.jpg", (texture) => {
+      setRepeatWrapping(texture, 4, 4);
+    });
+    const hangarMetalNormalTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_1K_normal.jpg", (texture) => {
+      setRepeatWrapping(texture, 4, 4);
     });
 
-    // METAL SCI FI
-    const hangarMetalColorTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_albedo.jpg");
-    const hangarMetalRoughnessTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_roughness.jpg");
-    const hangarMetalAOTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_ao.jpg");
-    const hangarMetalMetalnessTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_metallic.jpg");
-    const hangarMetalNormalTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_4K_normal.jpg");
-
     hangarMetalColorTexture.colorSpace = THREE.SRGBColorSpace;
-
-    setRepeatWrapping(hangarMetalColorTexture, 2, 2);
-    setRepeatWrapping(hangarMetalRoughnessTexture, 2, 2);
-    setRepeatWrapping(hangarMetalAOTexture, 2, 2);
-    setRepeatWrapping(hangarMetalMetalnessTexture, 2, 2);
-    setRepeatWrapping(hangarMetalNormalTexture, 2, 2);
+    hangarMetalColorTexture.encoding = THREE.sRGBEncoding;
 
     // Fonts
     const fontLoader = new FontLoader();
@@ -144,48 +133,53 @@ function Home() {
     textGeometry.center();
     textGeometry.setAttribute("uv2", new THREE.BufferAttribute(textGeometry.attributes.uv.array, 2));
 
-    const text = new THREE.Mesh(textGeometry, metalTexture);
-    text.position.set(-0.3, 0, 4);
+    const text = new THREE.Mesh(textGeometry, hangarMetalColorTexture);
+    text.position.set(0.2, 0, 5);
     text.castShadow = true;
     text.receiveShadow = true;
     textGeometry.computeBoundingBox();
     textGeometry.computeVertexNormals();
     // scene.add(text);
 
-    const subText = new TextGeometry("web developer", {
-      font,
-      size: window.innerWidth < 1500 ? 0.05 : 0.07,
-      depth: 0.1,
-      curveSegments: 6,
-      bevelSegments: 4,
-      bevelEnabled: true,
-      bevelThickness: 0.1,
-      bevelSize: 0.005,
-    });
-    subText.center();
-    subText.setAttribute("uv2", new THREE.BufferAttribute(subText.attributes.uv.array, 2));
-
-    const text2 = new THREE.Mesh(subText, metalTexture);
-    text2.position.y = -0.225;
-    text2.position.x = -1.02;
-    text2.castShadow = true;
-    text2.receiveShadow = true;
-    subText.computeBoundingBox();
-    subText.computeVertexNormals();
-    // scene.add(text2);
-
     /*
      * Geometries
      */
 
+    // Light Switch
+    // const lightSwitchBox = new THREE.BoxGeometry(0.09, 0.22, 0.1);
+    // const glowingRed = new THREE.MeshStandardMaterial({ color: "red", emissive: "red", emissiveIntensity: 1 });
+    // const lightSwitch = new THREE.Mesh(lightSwitchBox, glowingRed);
+    // lightSwitch.position.set(-1.23, 0, 6.15);
+    // scene.add(lightSwitch);
+
+    // const raycaster = new THREE.Raycaster();
+    // const pointer = new THREE.Vector2();
+
+    // window.addEventListener("click", (event) => {
+    //   // Convert screen coords to normalized device coords
+    //   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    //   pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    //   raycaster.setFromCamera(pointer, camera);
+
+    //   const intersects = raycaster.intersectObject(lightSwitch);
+    //   if (intersects.length > 0) {
+    //     glowingRed.color.set("lightgreen");
+    //     glowingRed.emissive.set("lightgreen");
+    //   }
+    // });
+
     // ROOM
+    const gltfLoader = new GLTFLoader(loadingManager);
 
-    const gltfLoader = new GLTFLoader();
+    // gltfLoader.load("../src/static/SpaceShipLightSwitch.glb", (gltf) => {
+    //   const lightSwitchCase = gltf.scene;
+    //   scene.add(lightSwitchCase);
+    // });
 
-    gltfLoader.load("../src/static/SpaceShip.glb", (gltf) => {
+    gltfLoader.load("../src/static/SpaceShipLOWTEXTURE2.glb", (gltf) => {
       const roomModel = gltf.scene;
       scene.add(roomModel);
-      // roomModel.rotation.set(0, -1.55, 0);
 
       roomModel.traverse((child) => {
         if (child.isMesh) {
@@ -197,13 +191,6 @@ function Home() {
           child.material.normalMap = hangarMetalNormalTexture;
           child.material.roughnessMap = hangarMetalRoughnessTexture;
           child.material.metalnessMap = hangarMetalMetalnessTexture;
-
-          const repeat = 4;
-
-          setRepeatWrapping(child.material.map, 4, 4);
-          setRepeatWrapping(child.material.normalMap, 4, 4);
-          setRepeatWrapping(child.material.roughnessMap, 4, 4);
-          setRepeatWrapping(child.material.metalnessMap, 4, 4);
 
           child.material.transparent = false;
           // Make sure the material updates
@@ -219,7 +206,7 @@ function Home() {
     });
 
     // Bollards
-    gltfLoader.load("../src/static/SpaceShipBollards.glb", (gltf) => {
+    gltfLoader.load("../src/static/SpaceShipBollardsLOWTEXTURE.glb", (gltf) => {
       const spaceShipBollards = gltf.scene;
       scene.add(spaceShipBollards);
 
@@ -235,12 +222,7 @@ function Home() {
           child.material.roughnessMap = hangarMetalRoughnessTexture;
           child.material.metalnessMap = hangarMetalMetalnessTexture;
 
-          setRepeatWrapping(child.material.map, 0.25, 0.25);
-          setRepeatWrapping(child.material.normalMap, 0.25, 0.25);
-          setRepeatWrapping(child.material.roughnessMap, 0.25, 0.25);
-          setRepeatWrapping(child.material.metalnessMap, 0.25, 0.25);
           child.material.transparent = false;
-
           // Make sure the material updates
           child.material.needsUpdate = true;
         }
@@ -248,7 +230,7 @@ function Home() {
     });
 
     // BlastDoor
-    gltfLoader.load("../src/static/SpaceShipBlastDoor.glb", (gltf) => {
+    gltfLoader.load("../src/static/SpaceShipBlastDoorLOWTEXTURE.glb", (gltf) => {
       const blastDoorModel = gltf.scene;
       scene.add(blastDoorModel);
 
@@ -260,20 +242,8 @@ function Home() {
 
           // Apply maps
           child.material.map = hangarMetalColorTexture;
-          child.material.normalMap = hangarMetalNormalTexture;
-          child.material.roughnessMap = hangarMetalRoughnessTexture;
-          child.material.metalnessMap = hangarMetalMetalnessTexture;
-          const repeat = 1;
-
-          setRepeatWrapping(child.material.map, 1, 1);
-          setRepeatWrapping(child.material.normalMap, 1, 1);
-          setRepeatWrapping(child.material.roughnessMap, 1, 1);
-          setRepeatWrapping(child.material.metalnessMap, 1, 1);
 
           child.material.transparent = true;
-          // child.material.depthWrite = true;
-          // child.material.depthTest = true;
-          // Make sure the material updates
           child.material.needsUpdate = true;
         }
       });
@@ -298,23 +268,23 @@ function Home() {
      */
 
     // Fog
-    scene.fog = new THREE.FogExp2(0x262626, 0.1);
+    scene.fog = new THREE.FogExp2(0x262626, 0.12);
 
     // Lights
 
-    const pointLight = new THREE.PointLight(0xffffff, 1.5, 100);
+    const pointLight = new THREE.PointLight(0xffffff, 14, 100);
     const pointLightHelper = new THREE.PointLightHelper(pointLight);
     pointLight.position.set(-0, 0.7, -3);
     pointLight.castShadow = false;
     // scene.add(pointLightHelper);
 
-    const pointLight2 = new THREE.PointLight(0xffffff, 0.75, 100);
+    const pointLight2 = new THREE.PointLight(0xffffff, 1.5, 100);
     const pointLightHelper2 = new THREE.PointLightHelper(pointLight2);
-    pointLight2.position.set(-0, 0.7, 3);
+    pointLight2.position.set(-0, 0.7, 4.75);
     pointLight2.castShadow = false;
     // scene.add(pointLightHelper2);
 
-    const spotLight = new THREE.SpotLight(0xffffff, 18);
+    const spotLight = new THREE.SpotLight(0xffffff, 50);
     const spotLightHelper = new THREE.SpotLightHelper(spotLight);
     spotLight.position.set(0, 0.8, 0);
     const spotLightTarget = new THREE.Object3D();
@@ -337,8 +307,8 @@ function Home() {
     scene.add(pointLight2);
 
     // LIGHTING GUI
-    gui.add(pointLight, "intensity", 0, 10).name("PointLight1_Intensity");
-    gui.add(pointLight2, "intensity", 0, 10).name("PointLight2_Intensity");
+    gui.add(pointLight, "intensity", 0, 20).name("PointLight1_Intensity");
+    gui.add(pointLight2, "intensity", 0, 20).name("PointLight2_Intensity");
     gui.add(spotLight, "distance", 0, 10).name("SpotLight_Intensity");
 
     gui.add(pointLight.position, "z", -20, 20).name("PointLight1_ZPosition");
@@ -417,15 +387,6 @@ function Home() {
       }
     });
 
-    // Renderers
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, precision: "highp" });
-    renderer.setSize(sizes.width, sizes.height);
-    const cappedPixelRatio = window.innerWidth > 2500 ? 1 : Math.min(window.devicePixelRatio, 2);
-    renderer.setPixelRatio(cappedPixelRatio);
-
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowMap;
-
     // Resize
     const getCanvasSize = () => {
       const bounds = canvas.getBoundingClientRect();
@@ -464,24 +425,56 @@ function Home() {
       controls.update();
 
       // camera.lookAt(cameraFocus);
+
       renderer.render(scene, camera);
+
       requestAnimationFrame(tick);
     };
 
     tick();
 
     return () => {
-      // window.removeEventListener("resize", handleResize);
+      // Dispose text geometry & material
+      textGeometry?.dispose();
 
+      // Dispose all textures
+      [hangarMetalColorTexture, hangarMetalRoughnessTexture, hangarMetalAOTexture, hangarMetalMetalnessTexture, hangarMetalNormalTexture].forEach((tex) => tex?.dispose());
+
+      // Dispose all meshes and materials from scene
+      scene.traverse((child) => {
+        if (child.isMesh) {
+          child.geometry?.dispose();
+          if (Array.isArray(child.material)) {
+            child.material.forEach((m) => m?.dispose());
+          } else {
+            child.material?.dispose();
+          }
+        }
+      });
+
+      // Dispose renderer
       renderer.dispose();
-      textGeometry.dispose();
-      scene.remove(text);
+
+      // Dispose OrbitControls
+      controls.dispose();
+
+      // Destroy GUI
+      gui.destroy();
+
+      // Remove event listeners
+      // window.removeEventListener("mousemove", mouseMoveHandler);
+      // window.removeEventListener("touchmove", touchMoveHandler);
+      // window.removeEventListener("resize", resizeHandler);
+      // homeBtn?.removeEventListener("click", homeClickHandler);
+
+      // Cancel any animation frame
+      cancelAnimationFrame(tick);
     };
   }, []);
 
   return (
     <>
-      <Loader ref={loaderRef} />
+      <Loader refs={{ loaderRef, progressRef, progressPercentRef }} />
       <div ref={containerRef} style={{ position: "relative", width: "100%", height: "100%" }}>
         <canvas ref={canvasRef} className="webgl" />
         <WhatIDoPage />

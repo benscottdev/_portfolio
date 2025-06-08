@@ -9,7 +9,10 @@ import WhatIDoPage from "../pages/WhatIDoPage";
 import Loader from "../components/Loader";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { RGBELoader } from "three/examples/jsm/Addons.js";
+import { GridHelper } from "three";
 import GUI from "lil-gui";
+import HeadsUpDisplay from "../components/HeadsUpDisplay";
 
 function Home() {
   const canvasRef = useRef();
@@ -17,6 +20,7 @@ function Home() {
   const loaderRef = useRef();
   const progressRef = useRef();
   const progressPercentRef = useRef();
+  const instructionRef = useRef();
   const [loading, setLoading] = useState(true);
 
   let scene;
@@ -27,6 +31,7 @@ function Home() {
     texture.wrapT = THREE.RepeatWrapping;
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
+    texture.generateMipmaps = true;
   }
 
   useEffect(() => {
@@ -34,26 +39,44 @@ function Home() {
 
     const canvas = canvasRef.current;
     scene = new THREE.Scene();
+    const gridHelper = new THREE.GridHelper(100, 100);
+    // scene.add(gridHelper);
 
     let sizes = {
       width: window.innerWidth,
       height: window.innerHeight,
     };
 
-    const camera = new THREE.PerspectiveCamera(50, sizes.width / sizes.height, 0.001, 1000);
+    const isMobile = window.innerWidth < 800;
+    const camera = new THREE.PerspectiveCamera(isMobile ? 60 : 50, sizes.width / sizes.height, 0.001, 1000);
     camera.updateProjectionMatrix();
-    camera.position.set(0.05, 0.1, 8);
+    camera.position.set(0, 0, 11);
     scene.add(camera);
 
     // Renderers
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    // renderer.physicallyCorrectLights = true;
+    // renderer.frustumCulled = true;
     renderer.setSize(sizes.width, sizes.height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio), 2);
+    // renderer.setSize(window.innerWidth / 2, window.innerHeight / 2, false);
+    // canvas.style.width = "100vw";
+    // canvas.style.height = "100vh";
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // cap it
 
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
 
+    // const pmremGenerator = new THREE.PMREMGenerator(renderer);
+
     const loadingManager = new THREE.LoadingManager();
+
+    // const hdriLoader = new RGBELoader();
+    // hdriLoader.load("/HDR_blue_nebulae-1.hdr", function (texture) {
+    //   const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+    //   texture.dispose();
+    //   scene.environment = envMap;
+    //   scene.background = envMap;
+    // });
 
     // Runs on completion of all texture load
     loadingManager.onLoad = () => {
@@ -94,80 +117,85 @@ function Home() {
      * Textures
      */
     const textureLoader = new THREE.TextureLoader(loadingManager);
-
+    const repeat = 4;
     // SciFi Panel
-    const hangarMetalColorTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_1K_albedo.jpg", (texture) => {
-      setRepeatWrapping(texture);
+    const hangarMetalColorTexture = textureLoader.load("/textures/TCom_Scifi_Panel1/TCom_Scifi_Panel_4K_albedo.jpg", (texture) => {
+      setRepeatWrapping(texture, repeat, repeat);
     });
-    const hangarMetalRoughnessTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_1K_roughness.jpg", (texture) => {
-      setRepeatWrapping(texture, 4, 4);
+    const hangarMetalRoughnessTexture = textureLoader.load("/textures/TCom_Scifi_Panel1/TCom_Scifi_Panel_4K_roughness.jpg", (texture) => {
+      setRepeatWrapping(texture, repeat, repeat);
     });
-    const hangarMetalAOTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_1K_ao.jpg", (texture) => {
-      setRepeatWrapping(texture, 4, 4);
+    const hangarMetalAOTexture = textureLoader.load("/textures/TCom_Scifi_Panel1/TCom_Scifi_Panel_4K_ao.jpg", (texture) => {
+      setRepeatWrapping(texture, repeat, repeat);
     });
-    const hangarMetalMetalnessTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_1K_metallic.jpg", (texture) => {
-      setRepeatWrapping(texture, 4, 4);
+    const hangarMetalMetalnessTexture = textureLoader.load("/textures/TCom_Scifi_Panel1/TCom_Scifi_Panel_4K_metallic.jpg", (texture) => {
+      setRepeatWrapping(texture, repeat, repeat);
     });
-    const hangarMetalNormalTexture = textureLoader.load("/textures/TCom_Scifi_Panel/TCom_Scifi_Panel_1K_normal.jpg", (texture) => {
-      setRepeatWrapping(texture, 4, 4);
+    const hangarMetalNormalTexture = textureLoader.load("/textures/TCom_Scifi_Panel1/TCom_Scifi_Panel_4K_normal.png", (texture) => {
+      setRepeatWrapping(texture, repeat, repeat);
     });
 
     hangarMetalColorTexture.colorSpace = THREE.SRGBColorSpace;
     hangarMetalColorTexture.encoding = THREE.sRGBEncoding;
 
-    // Fonts
+    const hangarMaterial = new THREE.MeshStandardMaterial({
+      map: hangarMetalColorTexture,
+      roughnessMap: hangarMetalRoughnessTexture,
+      metalnessMap: hangarMetalMetalnessTexture,
+      aoMap: hangarMetalAOTexture,
+      normalMap: hangarMetalNormalTexture,
+    });
+
+    // Font
+    const textGroup = new THREE.Group();
     const fontLoader = new FontLoader();
     const font = fontLoader.parse(typeFace);
-    const textContent = "Ben scott";
+    const textContent = "Ben Scott";
 
     const textGeometry = new TextGeometry(textContent, {
       font,
-      size: 0.2,
-      depth: 0.1,
+      size: 0.1,
+      depth: 0.02,
       curveSegments: 12,
       bevelSegments: 4,
       bevelEnabled: true,
-      bevelThickness: 0.1,
-      bevelSize: 0.005,
+      bevelThickness: 0.01,
+      bevelSize: 0.0005,
     });
     textGeometry.center();
     textGeometry.setAttribute("uv2", new THREE.BufferAttribute(textGeometry.attributes.uv.array, 2));
+    const textMaterial = new THREE.MeshStandardMaterial({ color: "grey", roughness: 0.2, metalness: 1 });
 
-    const text = new THREE.Mesh(textGeometry, hangarMetalColorTexture);
-    text.position.set(0.2, 0, 5);
-    text.castShadow = true;
-    text.receiveShadow = true;
+    const text = new THREE.Mesh(textGeometry, textMaterial);
+    text.position.set(0, 0, 8);
     textGeometry.computeBoundingBox();
     textGeometry.computeVertexNormals();
-    // scene.add(text);
+    textGroup.add(text);
+
+    const subTextGeometry = new TextGeometry("Web Developer", {
+      font,
+      size: 0.03,
+      depth: 0.02,
+      curveSegments: 12,
+      bevelSegments: 4,
+      bevelEnabled: true,
+      bevelThickness: 0.01,
+      bevelSize: 0.0005,
+    });
+    subTextGeometry.center();
+    subTextGeometry.setAttribute("uv2", new THREE.BufferAttribute(textGeometry.attributes.uv.array, 2));
+
+    const subText = new THREE.Mesh(subTextGeometry, textMaterial);
+    subText.position.set(0, -0.08, 8);
+    subTextGeometry.computeBoundingBox();
+    subTextGeometry.computeVertexNormals();
+    textGroup.add(subText);
+
+    scene.add(textGroup);
 
     /*
      * Geometries
      */
-
-    // Light Switch
-    // const lightSwitchBox = new THREE.BoxGeometry(0.09, 0.22, 0.1);
-    // const glowingRed = new THREE.MeshStandardMaterial({ color: "red", emissive: "red", emissiveIntensity: 1 });
-    // const lightSwitch = new THREE.Mesh(lightSwitchBox, glowingRed);
-    // lightSwitch.position.set(-1.23, 0, 6.15);
-    // scene.add(lightSwitch);
-
-    // const raycaster = new THREE.Raycaster();
-    // const pointer = new THREE.Vector2();
-
-    // window.addEventListener("click", (event) => {
-    //   // Convert screen coords to normalized device coords
-    //   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-    //   pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    //   raycaster.setFromCamera(pointer, camera);
-
-    //   const intersects = raycaster.intersectObject(lightSwitch);
-    //   if (intersects.length > 0) {
-    //     glowingRed.color.set("lightgreen");
-    //     glowingRed.emissive.set("lightgreen");
-    //   }
-    // });
 
     // ROOM
     const gltfLoader = new GLTFLoader(loadingManager);
@@ -177,21 +205,19 @@ function Home() {
     //   scene.add(lightSwitchCase);
     // });
 
-    gltfLoader.load("../src/static/SpaceShipLOWTEXTURE2.glb", (gltf) => {
+    gltfLoader.load("../src/static/SpaceShip.glb", (gltf) => {
       const roomModel = gltf.scene;
       scene.add(roomModel);
 
       roomModel.traverse((child) => {
         if (child.isMesh) {
-          // Clone material if shared among objects
-          child.material = child.material.clone();
-
           // Apply maps
-          child.material.map = hangarMetalColorTexture;
-          child.material.normalMap = hangarMetalNormalTexture;
-          child.material.roughnessMap = hangarMetalRoughnessTexture;
-          child.material.metalnessMap = hangarMetalMetalnessTexture;
-
+          child.material.map = hangarMaterial.map;
+          child.material.roughnessMap = hangarMaterial.roughnessMap;
+          child.material.metalnessMap = hangarMaterial.metalnessMap;
+          child.material.normalMap = hangarMaterial.normalMap;
+          child.material.aoMap = hangarMaterial.aoMap;
+          child.material.side = THREE.DoubleSide;
           child.material.transparent = false;
           // Make sure the material updates
           child.material.needsUpdate = true;
@@ -199,96 +225,56 @@ function Home() {
       });
     });
 
-    // Monitor
-    gltfLoader.load("../src/static/SpaceShipScreen.glb", (gltf) => {
-      const spaceShipMonitor = gltf.scene;
-      scene.add(spaceShipMonitor);
-    });
+    // Pipes
+    gltfLoader.load("../src/static/SpaceShipPipes1.glb", (gltf) => {
+      const spaceShipPipes = gltf.scene;
 
-    // Bollards
-    gltfLoader.load("../src/static/SpaceShipBollardsLOWTEXTURE.glb", (gltf) => {
-      const spaceShipBollards = gltf.scene;
-      scene.add(spaceShipBollards);
-
-      spaceShipBollards.traverse((child) => {
+      spaceShipPipes.traverse((child) => {
         if (child.isMesh) {
-          // Clone material if shared among objects
-          child.material = child.material.clone();
-          child.material.side = THREE.DoubleSide;
-
-          // Apply maps
-          child.material.map = hangarMetalColorTexture;
-          child.material.normalMap = hangarMetalNormalTexture;
-          child.material.roughnessMap = hangarMetalRoughnessTexture;
-          child.material.metalnessMap = hangarMetalMetalnessTexture;
-
-          child.material.transparent = false;
-          // Make sure the material updates
-          child.material.needsUpdate = true;
+          child.material.color.set("orangered");
+          child.material.roughness = 0.4;
+          child.material.metalness = 1;
         }
       });
+      // scene.add(spaceShipPipes);
     });
 
-    // BlastDoor
-    gltfLoader.load("../src/static/SpaceShipBlastDoorLOWTEXTURE.glb", (gltf) => {
-      const blastDoorModel = gltf.scene;
-      scene.add(blastDoorModel);
+    // Desk
+    gltfLoader.load("../src/static/SpaceShipDesk3.glb", (gltf) => {
+      const spaceShipDesk = gltf.scene;
 
-      blastDoorModel.traverse((child) => {
-        if (child.isMesh) {
-          // Clone material if shared among objects
-          child.material = child.material.clone();
-          child.material.side = THREE.DoubleSide;
-
-          // Apply maps
-          child.material.map = hangarMetalColorTexture;
-
-          child.material.transparent = true;
-          child.material.needsUpdate = true;
-        }
-      });
+      scene.add(spaceShipDesk);
     });
-
-    // Emissive Lights
-    const lightMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1 });
-    const lightGeom = new THREE.BoxGeometry(0.4, 0.1, 2);
-    const lightOneMesh = new THREE.Mesh(lightGeom, lightMaterial);
-    const lightTwoMesh = new THREE.Mesh(lightGeom, lightMaterial);
-
-    lightOneMesh.position.set(0, 0.76, 3);
-    lightOneMesh.rotation.y = Math.PI * 0.5;
-    scene.add(lightOneMesh);
-
-    lightTwoMesh.position.set(0, 0.76, -3);
-    lightTwoMesh.rotation.y = Math.PI * 0.5;
-    scene.add(lightTwoMesh);
 
     /*
      * Scene Add-ons
      */
 
-    // Fog
-    scene.fog = new THREE.FogExp2(0x262626, 0.12);
-
     // Lights
 
-    const pointLight = new THREE.PointLight(0xffffff, 14, 100);
+    const pointLight = new THREE.PointLight(0xffffff, 0, 100);
     const pointLightHelper = new THREE.PointLightHelper(pointLight);
-    pointLight.position.set(-0, 0.7, -3);
-    pointLight.castShadow = false;
-    // scene.add(pointLightHelper);
+    pointLight.position.set(-0, 0.7, -6.3);
+    pointLightHelper.visible = false;
+    scene.add(pointLightHelper);
 
-    const pointLight2 = new THREE.PointLight(0xffffff, 1.5, 100);
+    const pointLight2 = new THREE.PointLight(0xffffff, 0, 100);
     const pointLightHelper2 = new THREE.PointLightHelper(pointLight2);
-    pointLight2.position.set(-0, 0.7, 4.75);
-    pointLight2.castShadow = false;
-    // scene.add(pointLightHelper2);
+    pointLightHelper2.visible = false;
+    pointLight2.position.set(-0, 0.2, 0);
+    scene.add(pointLightHelper2);
+
+    const pointLight3 = new THREE.PointLight(0xffffff, 0, 100);
+    const pointLightHelper3 = new THREE.PointLightHelper(pointLight3);
+    pointLightHelper3.visible = false;
+    pointLight3.position.set(-0, 0.2, 8.8);
+    scene.add(pointLightHelper3);
 
     const spotLight = new THREE.SpotLight(0xffffff, 50);
     const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+
     spotLight.position.set(0, 0.8, 0);
     const spotLightTarget = new THREE.Object3D();
-    spotLight.castShadow = false;
     spotLightTarget.position.set(0, -3, 0);
     scene.add(spotLightTarget);
     spotLight.target = spotLightTarget;
@@ -299,21 +285,47 @@ function Home() {
     spotLight.angle = Math.PI / 4;
     spotLight.distance = 1;
 
-    const ambi = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambi = new THREE.AmbientLight(0xffffff, 0.1);
 
-    scene.add(spotLight);
-    // scene.add(ambi);
     scene.add(pointLight);
     scene.add(pointLight2);
+    scene.add(pointLight3);
+    scene.add(spotLight);
+    // scene.add(ambi);
 
-    // LIGHTING GUI
-    gui.add(pointLight, "intensity", 0, 20).name("PointLight1_Intensity");
-    gui.add(pointLight2, "intensity", 0, 20).name("PointLight2_Intensity");
-    gui.add(spotLight, "distance", 0, 10).name("SpotLight_Intensity");
+    // Fog
+    scene.fog = new THREE.FogExp2(0x262626, 0.05);
 
-    gui.add(pointLight.position, "z", -20, 20).name("PointLight1_ZPosition");
-    gui.add(pointLight2.position, "z", -20, 20).name("PointLight2_ZPosition");
-    gui.add(spotLight.position, "z", -20, 20).name("SpotLight_ZPosition");
+    // LIGHTING & FOG GUI
+
+    const pointLight1Folder = gui.addFolder("Point Light 1");
+    pointLight1Folder.add(pointLightHelper, "visible", true, false);
+    pointLight1Folder.add(pointLight, "intensity", 0, 20).name("PointLight1 Intensity");
+    pointLight1Folder.add(pointLight.position, "x", -20, 20).name("PointLight1 X Position");
+    pointLight1Folder.add(pointLight.position, "y", -20, 20).name("PointLight1 Y Position");
+    pointLight1Folder.add(pointLight.position, "z", -20, 20).name("PointLight1 Z Position");
+
+    const pointLight2Folder = gui.addFolder("Point Light 2");
+    pointLight2Folder.add(pointLightHelper2, "visible", true, false);
+    pointLight2Folder.add(pointLight2, "intensity", 0, 20).name("PointLight2 Intensity");
+    pointLight2Folder.add(pointLight2.position, "x", -20, 20).name("PointLight2 X Position");
+    pointLight2Folder.add(pointLight2.position, "y", -20, 20).name("PointLight2 Y Position");
+    pointLight2Folder.add(pointLight2.position, "z", -20, 20).name("PointLight2 Z Position");
+
+    const pointLight3Folder = gui.addFolder("Point Light 3");
+    pointLight3Folder.add(pointLightHelper3, "visible", true, false);
+    pointLight3Folder.add(pointLight3, "intensity", 0, 20).name("PointLight3 Intensity");
+    pointLight3Folder.add(pointLight3.position, "x", -20, 20).name("PointLight3 X Position");
+    pointLight3Folder.add(pointLight3.position, "y", -20, 20).name("PointLight3 Y Position");
+    pointLight3Folder.add(pointLight3.position, "z", -20, 20).name("PointLight3 Z Position");
+
+    const spotLightFolder = gui.addFolder("Spot Light");
+    spotLightFolder.add(spotLight, "distance", 0, 10).name("SpotLight_Intensity");
+    spotLightFolder.add(spotLight.position, "z", -20, 20).name("SpotLight_ZPosition");
+
+    const fogFolder = gui.addFolder("Fog");
+    fogFolder.add(scene.fog, "density", 0, 0.5);
+    fogFolder.addColor(scene.fog, "color", 255);
 
     // Camera
     const cameraFocus = new THREE.Vector3();
@@ -325,67 +337,38 @@ function Home() {
       z: cameraFocus.z,
     };
 
-    /*
-     * Div Positioning
-     */
-
     // Home
-    const homeBtn = document.querySelector(".home");
-    if (homeBtn) {
-      homeBtn.addEventListener("click", () => {
-        const tl = gsap.timeline();
-        gsap.to(camera.position, {
-          x: text.position.x,
-          y: text.position.y,
-          duration: 1,
-          ease: "power2.inOut",
-        });
-
-        gsap.to(lookAtTarget, {
-          x: text.position.x,
-          y: text.position.y,
-          z: text.position.z,
-          duration: 1,
-          ease: "power2.inOut",
-          onUpdate: () => {
-            cameraFocus.set(lookAtTarget.x, lookAtTarget.y, lookAtTarget.z);
-            targetX = lookAtTarget.x;
-            targetY = lookAtTarget.y;
-          },
-        });
-      });
-    }
 
     // Mouse Move Parallax
     let targetX = 0;
     let targetY = 0;
 
     let mouseMoveScheduled = false;
-    window.addEventListener("mousemove", (e) => {
-      if (!mouseMoveScheduled) {
-        mouseMoveScheduled = true;
-        requestAnimationFrame(() => {
-          const relativeX = (e.clientX / window.innerWidth - 0.5) * 4;
-          const relativeY = (e.clientY / window.innerHeight - 0.5) * 4;
+    // window.addEventListener("mousemove", (e) => {
+    //   if (!mouseMoveScheduled) {
+    //     mouseMoveScheduled = true;
+    //     requestAnimationFrame(() => {
+    //       const relativeX = (e.clientX / window.innerWidth - 0.5) * -1;
+    //       const relativeY = (e.clientY / window.innerHeight - 0.5) * -1;
 
-          targetX = cameraFocus.x + relativeX * 0.95;
-          targetY = cameraFocus.y - relativeY * 0.95;
+    //       targetX = cameraFocus.x + relativeX * 0.95;
+    //       targetY = cameraFocus.y - relativeY * 0.95;
 
-          mouseMoveScheduled = false;
-        });
-      }
-    });
+    //       mouseMoveScheduled = false;
+    //     });
+    //   }
+    // });
 
-    window.addEventListener("touchmove", (e) => {
-      if (e.touches.length === 1) {
-        const touch = e.touches[0];
-        const relativeX = (touch.clientX / window.innerWidth - 0.5) * 4;
-        const relativeY = (touch.clientY / window.innerHeight - 0.5) * 4;
+    // window.addEventListener("touchmove", (e) => {
+    //   if (e.touches.length === 1) {
+    //     const touch = e.touches[0];
+    //     const relativeX = (touch.clientX / window.innerWidth - 0.5) * -1;
+    //     const relativeY = (touch.clientY / window.innerHeight - 0.5) * -1;
 
-        targetX = cameraFocus.x + relativeX * 3.45;
-        targetY = cameraFocus.y - relativeY * 3.45;
-      }
-    });
+    //     targetX = cameraFocus.x + relativeX * 3.45;
+    //     targetY = cameraFocus.y - relativeY * 3.45;
+    //   }
+    // });
 
     // Resize
     const getCanvasSize = () => {
@@ -395,7 +378,7 @@ function Home() {
         height: bounds.height,
       };
     };
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMapping = THREE.ReinhardToneMapping;
     renderer.toneMappingExposure = 1.0;
 
     sizes = getCanvasSize();
@@ -407,7 +390,9 @@ function Home() {
       camera.aspect = sizes.width / sizes.height;
       camera.updateProjectionMatrix();
 
-      renderer.setSize(sizes.width, sizes.height);
+      renderer.setSize(window.innerWidth / 2, window.innerHeight / 2, false);
+      canvas.style.width = "100vw";
+      canvas.style.height = "100vh";
     });
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -416,20 +401,58 @@ function Home() {
     controls.dampingFactor = 0.05;
     controls.zoomSpeed = 1.0;
 
+    const clock = new THREE.Clock();
+
     // Animation
     const tick = () => {
+      const delta = clock.getDelta();
       const parallaxX = targetX;
       const parallaxY = targetY;
-      // camera.position.x += (parallaxX - camera.position.x) * 0.05;
-      // camera.position.y += (parallaxY - camera.position.y) * 0.05;
+      // camera.position.x += (parallaxX - camera.position.x) * 0.005;
+      // camera.position.y += (parallaxY - camera.position.y) * 0.005;
       controls.update();
 
       // camera.lookAt(cameraFocus);
-
       renderer.render(scene, camera);
 
       requestAnimationFrame(tick);
     };
+
+    // Interaction
+    let currentPosition = "homePositionLightsOff";
+
+    instructionRef.current.addEventListener("click", () => {
+      if (currentPosition == "homePositionLightsOff") {
+        const tl = gsap.timeline();
+        instructionRef.current.innerHTML = "TURNING ON THE LIGHTS...";
+
+        tl.to(pointLight, {
+          intensity: 20,
+          duration: 0.8,
+        });
+
+        tl.to(pointLight2, {
+          intensity: 12,
+          duration: 0.8,
+        });
+        tl.to(pointLight3, {
+          intensity: 8,
+          duration: 0.8,
+          onComplete: () => {
+            instructionRef.current.innerHTML = "SEE THE VIEW";
+            currentPosition = "homePositionLightsOn";
+          },
+        });
+      } else if (currentPosition == "homePositionLightsOn") {
+        const tl = gsap.timeline();
+        tl.to(camera.position, {
+          x: 1.3552288227318907,
+          y: 0.047661602809710824,
+          z: 0.0100716447451053,
+          duration: 4,
+        });
+      }
+    });
 
     tick();
 
@@ -475,7 +498,8 @@ function Home() {
   return (
     <>
       <Loader refs={{ loaderRef, progressRef, progressPercentRef }} />
-      <div ref={containerRef} style={{ position: "relative", width: "100%", height: "100%" }}>
+      <div className="sceneWrapper" ref={containerRef}>
+        <HeadsUpDisplay ref={instructionRef} />
         <canvas ref={canvasRef} className="webgl" />
         <WhatIDoPage />
       </div>

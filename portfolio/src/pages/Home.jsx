@@ -10,7 +10,6 @@ import Loader from "../components/Loader";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RGBELoader } from "three/examples/jsm/Addons.js";
-import { GridHelper } from "three";
 import GUI from "lil-gui";
 import HeadsUpDisplay from "../components/HeadsUpDisplay";
 
@@ -22,6 +21,7 @@ function Home() {
   const progressPercentRef = useRef();
   const instructionRef = useRef();
   const [loading, setLoading] = useState(true);
+  // Camera Movement Logic Position
 
   let scene;
 
@@ -39,8 +39,6 @@ function Home() {
 
     const canvas = canvasRef.current;
     scene = new THREE.Scene();
-    const gridHelper = new THREE.GridHelper(100, 100);
-    // scene.add(gridHelper);
 
     let sizes = {
       width: window.innerWidth,
@@ -48,35 +46,41 @@ function Home() {
     };
 
     const isMobile = window.innerWidth < 800;
-    const camera = new THREE.PerspectiveCamera(isMobile ? 60 : 50, sizes.width / sizes.height, 0.001, 1000);
+
+    const camera = new THREE.PerspectiveCamera(isMobile ? 60 : 50, sizes.width / sizes.height, 0.01, 1000);
     camera.updateProjectionMatrix();
-    camera.position.set(0, 0, 11);
-    scene.add(camera);
+    // scene.add(camera);
+    const cameraGroup = new THREE.Group();
+    cameraGroup.add(camera);
+
+    const focusDistance = 3;
+    const cameraWorldDir = new THREE.Vector3();
+    camera.getWorldDirection(cameraWorldDir);
+
+    const focusPoint = camera.position.clone().add(cameraWorldDir.multiplyScalar(focusDistance));
+    scene.add(cameraGroup);
+    cameraGroup.position.set(0, 0.2, 11);
 
     // Renderers
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    // renderer.physicallyCorrectLights = true;
-    // renderer.frustumCulled = true;
+    renderer.physicallyCorrectLights = true;
+    renderer.frustumCulled = true;
     renderer.setSize(sizes.width, sizes.height);
-    // renderer.setSize(window.innerWidth / 2, window.innerHeight / 2, false);
-    // canvas.style.width = "100vw";
-    // canvas.style.height = "100vh";
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // cap it
 
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
 
-    // const pmremGenerator = new THREE.PMREMGenerator(renderer);
-
     const loadingManager = new THREE.LoadingManager();
 
-    // const hdriLoader = new RGBELoader();
-    // hdriLoader.load("/HDR_blue_nebulae-1.hdr", function (texture) {
-    //   const envMap = pmremGenerator.fromEquirectangular(texture).texture;
-    //   texture.dispose();
-    //   scene.environment = envMap;
-    //   scene.background = envMap;
-    // });
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    const hdriLoader = new RGBELoader();
+    hdriLoader.load("/HDR_blue_nebulae-1.hdr", function (texture) {
+      const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+      texture.dispose();
+      scene.environment = envMap;
+      scene.background = envMap;
+    });
 
     // Runs on completion of all texture load
     loadingManager.onLoad = () => {
@@ -171,6 +175,7 @@ function Home() {
     textGeometry.computeBoundingBox();
     textGeometry.computeVertexNormals();
     textGroup.add(text);
+    textMaterial.transparent = true;
 
     const subTextGeometry = new TextGeometry("Web Developer", {
       font,
@@ -199,11 +204,6 @@ function Home() {
 
     // ROOM
     const gltfLoader = new GLTFLoader(loadingManager);
-
-    // gltfLoader.load("../src/static/SpaceShipLightSwitch.glb", (gltf) => {
-    //   const lightSwitchCase = gltf.scene;
-    //   scene.add(lightSwitchCase);
-    // });
 
     gltfLoader.load("../src/static/SpaceShip.glb", (gltf) => {
       const roomModel = gltf.scene;
@@ -245,6 +245,17 @@ function Home() {
 
       scene.add(spaceShipDesk);
     });
+
+    // const lightBarGeom = new THREE.BoxGeometry(0.25, 0.05, 3);
+    // const lightBarMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0 });
+
+    // const lightBar1 = new THREE.Mesh(lightBarGeom, lightBarMaterial);
+    // const lightBar2 = new THREE.Mesh(lightBarGeom, lightBarMaterial);
+
+    // lightBar1.position.set(0, 1.3, 0);
+    // lightBar2.position.set(0, 1.16, 8);
+
+    // scene.add(lightBar1, lightBar2);
 
     /*
      * Scene Add-ons
@@ -327,15 +338,13 @@ function Home() {
     fogFolder.add(scene.fog, "density", 0, 0.5);
     fogFolder.addColor(scene.fog, "color", 255);
 
-    // Camera
-    const cameraFocus = new THREE.Vector3();
-    cameraFocus.copy(text.position);
+    // Camera Parallax
 
-    const lookAtTarget = {
-      x: cameraFocus.x,
-      y: cameraFocus.y,
-      z: cameraFocus.z,
-    };
+    // const lookAtTarget = {
+    //   x: focusPoint.x,
+    //   y: focusPoint.y,
+    //   z: focusPoint.z,
+    // };
 
     // Home
 
@@ -343,16 +352,16 @@ function Home() {
     let targetX = 0;
     let targetY = 0;
 
-    let mouseMoveScheduled = false;
+    // let mouseMoveScheduled = false;
     // window.addEventListener("mousemove", (e) => {
     //   if (!mouseMoveScheduled) {
     //     mouseMoveScheduled = true;
     //     requestAnimationFrame(() => {
-    //       const relativeX = (e.clientX / window.innerWidth - 0.5) * -1;
-    //       const relativeY = (e.clientY / window.innerHeight - 0.5) * -1;
+    //       const relativeX = e.clientX / window.innerWidth - 0.5;
+    //       const relativeY = e.clientY / window.innerHeight - 0.5;
 
-    //       targetX = cameraFocus.x + relativeX * 0.95;
-    //       targetY = cameraFocus.y - relativeY * 0.95;
+    //       targetX = lookAtTarget.x + relativeX * 0.95;
+    //       targetY = lookAtTarget.y - relativeY * 0.95;
 
     //       mouseMoveScheduled = false;
     //     });
@@ -395,63 +404,155 @@ function Home() {
       canvas.style.height = "100vh";
     });
 
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.update();
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.zoomSpeed = 1.0;
+    // const controls = new OrbitControls(camera, renderer.domElement);
+    // controls.update();
+    // controls.enableDamping = true;
+    // controls.dampingFactor = 0.05;
+    // controls.zoomSpeed = 1.0;
 
     const clock = new THREE.Clock();
 
-    // Animation
     const tick = () => {
       const delta = clock.getDelta();
-      const parallaxX = targetX;
-      const parallaxY = targetY;
-      // camera.position.x += (parallaxX - camera.position.x) * 0.005;
-      // camera.position.y += (parallaxY - camera.position.y) * 0.005;
-      controls.update();
+      camera.getWorldDirection(cameraWorldDir);
 
-      // camera.lookAt(cameraFocus);
+      // Compute focus point 3 units in front of camera
+      focusPoint.copy(camera.position).add(cameraWorldDir.clone().multiplyScalar(focusDistance));
+      // camera.lookAt(focusPoint);
+      const smoothingFactor = 2; // play with this value: 3 = slow, 5 = nice, 10 = snappy
+      // const parallaxX = targetX;
+      // const parallaxY = targetY;
+      // camera.position.x += (parallaxX - camera.position.x) * smoothingFactor * delta;
+      // camera.position.y += (parallaxY - camera.position.y) * smoothingFactor * delta;
+
+      // camera.lookAt(focusPoint);
+
       renderer.render(scene, camera);
 
       requestAnimationFrame(tick);
     };
 
-    // Interaction
-    let currentPosition = "homePositionLightsOff";
+    let currentPosition = "text";
 
+    // Interaction
     instructionRef.current.addEventListener("click", () => {
-      if (currentPosition == "homePositionLightsOff") {
+      if (currentPosition == "text") {
+        console.log(currentPosition);
+        // Position = Ben Scott Text
         const tl = gsap.timeline();
         instructionRef.current.innerHTML = "TURNING ON THE LIGHTS...";
 
-        tl.to(pointLight, {
-          intensity: 20,
-          duration: 0.8,
+        tl.to(
+          pointLight,
+          {
+            intensity: 20,
+            duration: 0.8,
+          },
+          "-=0.2"
+        );
+
+        tl.to(
+          pointLight2,
+          {
+            intensity: 12,
+            duration: 0.8,
+          },
+          "-=0.2"
+        );
+        tl.to(
+          pointLight3,
+          {
+            intensity: 8,
+            duration: 0.8,
+            onComplete: () => {
+              instructionRef.current.innerHTML = "SEE THE VIEW";
+              currentPosition = "text_LightsOn";
+              console.log(currentPosition);
+            },
+          },
+          "-=0.2"
+        );
+      } else if (currentPosition == "text_LightsOn") {
+        // Position = Windows
+        // Quaternion Logic for rotating the camera
+        // Creaate new quaternion
+        const quaternion = new THREE.Quaternion();
+        // Create it's axis, (x,y,z)
+        const axis = new THREE.Vector3(0, 1, 0);
+        // Choose an angle (PI = 180: /2 = 90)
+        const angle = Math.PI / 2;
+        // Set the axis and angle
+        quaternion.setFromAxisAngle(axis, angle);
+        // Animate to the new quaternion
+        gsap.to(textMaterial, {
+          opacity: 0,
+          duration: 1,
+        });
+        gsap.to(cameraGroup.position, {
+          x: 1.5,
+          y: 0,
+          z: 0,
+          duration: 3,
+          ease: "power1.inOut",
         });
 
-        tl.to(pointLight2, {
-          intensity: 12,
-          duration: 0.8,
-        });
-        tl.to(pointLight3, {
-          intensity: 8,
-          duration: 0.8,
+        gsap.to(cameraGroup.quaternion, {
+          x: quaternion.x,
+          y: quaternion.y,
+          z: quaternion.z,
+          w: quaternion.w,
+          duration: 2,
+          ease: "power1.inOut",
+          onUpdate: () => {
+            cameraGroup.quaternion.normalize();
+          },
           onComplete: () => {
-            instructionRef.current.innerHTML = "SEE THE VIEW";
-            currentPosition = "homePositionLightsOn";
+            currentPosition = "windows";
+            instructionRef.current.innerHTML = "VISIT WORKSPACE";
           },
         });
-      } else if (currentPosition == "homePositionLightsOn") {
+      } else if (currentPosition == "windows") {
+        // Create new quaternion instance
+        const quarternion = new THREE.Quaternion();
+        // Create new axis (x,y,z)
+        const axis = new THREE.Vector3(0, 1, 0);
+        // Decide on an angle (pi = 180deg)
+        const angle = -Math.PI / 2;
+        // set quaterion axis and angle
+        quarternion.setFromAxisAngle(axis, angle);
         const tl = gsap.timeline();
-        tl.to(camera.position, {
-          x: 1.3552288227318907,
-          y: 0.047661602809710824,
-          z: 0.0100716447451053,
-          duration: 4,
+
+        tl.to(cameraGroup.quaternion, {
+          x: quarternion.x,
+          y: quarternion.y,
+          z: quarternion.z,
+          w: quarternion.w,
+          duration: 2,
+          ease: "power2.inOut",
+          onUpdate: () => {
+            cameraGroup.quaternion.normalize();
+          },
         });
+        tl.to(
+          cameraGroup.position,
+          {
+            x: 4,
+            y: 0,
+            z: 0,
+            duration: 2,
+
+            onComplete: () => {
+              currentPosition = "desk";
+            },
+          },
+          "-=0.4"
+        );
       }
+    });
+
+    window.addEventListener("click", () => {
+      console.log("camera Position:", camera.position);
+      console.log("focusPoint:", focusPoint);
     });
 
     tick();
@@ -479,7 +580,7 @@ function Home() {
       renderer.dispose();
 
       // Dispose OrbitControls
-      controls.dispose();
+      // controls.dispose();
 
       // Destroy GUI
       gui.destroy();

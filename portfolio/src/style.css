@@ -548,7 +548,8 @@ p {
 }
 @media (min-width: 1200px) {
   .headsUpContainer .instruction:hover {
-    background-color: rgba(165, 243, 255, 0.735);
+    background-color: rgba(165, 243, 255, 0.435);
+    backdrop-filter: blur(3px);
   }
 }
 @media (max-width: 1200px) {
